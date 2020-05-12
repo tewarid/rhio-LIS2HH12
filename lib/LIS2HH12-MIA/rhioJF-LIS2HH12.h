@@ -119,7 +119,7 @@ class LIS2HH12 {
   int zerox, zeroy, zeroz;
 
   //******Basic function******
-  void setBasic();
+  void setBasicConfig();
 
   //******Initialization******
   void begin(char Mode);
@@ -162,12 +162,16 @@ class LIS2HH12 {
   void setIntGenerator2(char INT1, char INT2);
 
   //*****Inercial Interrupt*****
-  void setIntG1Mode(uint8_t IntMode);
-  void setXIEG1(char XHIE, char XLIE);
-  void setYIEG1(char YHIE, char YLIE);
-  void setZIEG1(char ZHIE, char ZLIE);
-  void readAxisIntG1H(char* xh, char* yh, char* zh);
-  void readAxisIntG1L(char* xl, char* yl, char* zl);
+  void setIntMode(uint8_t IntMode, char IG);
+  void setXIE(uint8_t XIE, char IG);
+  void setYIE(uint8_t YIE, char IG);
+  void setZIE(uint8_t ZIE, char IG);
+  char readINT(char IG);
+  void readAxisHInt(char* xh, char* yh, char* zh, char IG);
+  void readAxisLInt(char* xl, char* yl, char* zl, char IG);
+  void setMinDurationINT(uint8_t Duration, char IG);
+  void setDecrementINT(char Status, char IG);
+  void setWaitINT();
 
   //****6D/4D Orientation Detection****
 
