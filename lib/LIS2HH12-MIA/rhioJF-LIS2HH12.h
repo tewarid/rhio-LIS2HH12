@@ -8,6 +8,9 @@
 #define I2C_MODE 0
 #define SPI_MODE 1
 
+#define WIRE4 0
+#define WIRE3 1
+
 #define LIS2HH12_SPI_CLOCK 10000000  // Max
 #define LIS2HH12_SPI_MODE SPI_MODE0
 
@@ -63,51 +66,18 @@
 #define LIS2HH12_ZL_REFERENCE 0x3E  // Reference Z Low (R/W)
 #define LIS2HH12_ZH_REFERENCE 0x3F  // Reference Z High (R/W)
 
-/************************** INTERRUPT PINS **************************/
-#define LIS2HH12_INT1_PIN 0x00  // INT1: 0
-#define LIS2HH12_INT2_PIN 0x01  // INT2: 1
-
-/********************** INTERRUPT BIT POSITION **********************/
-#define LIS2HH12_INT_DATA_READY_BIT 0x07
-#define LIS2HH12_INT_SINGLE_TAP_BIT 0x06
-#define LIS2HH12_INT_DOUBLE_TAP_BIT 0x05
-#define LIS2HH12_INT_ACTIVITY_BIT 0x04
-#define LIS2HH12_INT_INACTIVITY_BIT 0x03
-#define LIS2HH12_INT_FREE_FALL_BIT 0x02
-#define LIS2HH12_INT_WATERMARK_BIT 0x01
-#define LIS2HH12_INT_OVERRUNY_BIT 0x00
-
-#define LIS2HH12_DATA_READY 0x07
-#define LIS2HH12_SINGLE_TAP 0x06
-#define LIS2HH12_DOUBLE_TAP 0x05
-#define LIS2HH12_ACTIVITY 0x04
-#define LIS2HH12_INACTIVITY 0x03
-#define LIS2HH12_FREE_FALL 0x02
-#define LIS2HH12_WATERMARK 0x01
-#define LIS2HH12_OVERRUNY 0x00
-
-#define LIS2HH12_OK 1     // No Error
-#define LIS2HH12_ERROR 0  // Error Exists
-
-#define LIS2HH12_NO_ERROR 0    // Initial State
-#define LIS2HH12_READ_ERROR 1  // Accelerometer Reading Error
-#define LIS2HH12_BAD_ARG 2     // Bad Argument
-
 /*********************SET MACROS*********************/
-#define OffanalogLPF 0
-#define OnanalogLPF 1
+#define OFFALPF 0
+#define ONALPF 1
 
-#define OffdigitalLPF 0
-#define OndigitalLPF 1
+#define OFFDLPF 0
+#define ONDLPF 1
 
-#define INT1_DRDY 0
-#define INT2_DRDY 1
+#define H_INT 1
+#define L_INT 0
 
-#define H_int 1
-#define L_int 0
-
-#define OffHPF 0
-#define OnHPF 1
+#define OFFHPF 0
+#define ONHPF 1
 
 class LIS2HH12 {
  public:
@@ -116,6 +86,7 @@ class LIS2HH12 {
   uint8_t commInterface;
   uint8_t chipSelectPin;
   uint8_t I2CAddress;
+  char SPI_Wire;
   int zerox, zeroy, zeroz;
 
   //******Basic function******
@@ -123,32 +94,35 @@ class LIS2HH12 {
 
   //******Initialization******
   void begin(char Mode);
-  void setSPI(uint8_t csPin);
+  void setSPI(uint8_t csPin, char SPI_WIRE);
   void setI2C(uint8_t Address);
 
   //******Operating Modes******
   // There are a decimation filter cutoff frequency that depend of ODR
   void setFrequency(uint8_t ODR);
   void setAxis(uint8_t ZYX);
-  void setActiveInactive(uint8_t threshold, uint8_t duration);
   // The analog LPF have a default condition bandwidth of ODR/2 if you
   // don't set the analogLPF variable
   void setLPFilters(char analogLPF, char digitalLPF);
   void setanalogBandwidth(uint8_t BW);
   void setdigitalLPF(uint8_t LPFcutOff);
-  void setIntDataready(char IntDataReady);
+  void setActiveInactive(uint8_t threshold, uint8_t duration);
+  void setIntDataready(char IntDataReady, char INT);
   void setPolarityINT(char H_Lint);
   void setFS(uint8_t FS);
   void setSelfTest(uint8_t mode);
   void setZeroLevel(int zx, int zy, int zz);
-  void setInt2Boot();
+  void setInt2Boot(char Status);
   void setReboot();
+  void setDecimation(uint8_t Dec);
+  void setDebug(char Debug);
+  void setSoftReset();
 
   //******Modes Reading Accerlation Data******
-  char readAccelUsingStatus(int* x, int* y, int* z);
-  void readAccelUsingDataready(int* x, int* y, int* z);
-  void readAccelUsingBDU(int* x, int* y, int* z);
-  void readAccelWithoutConvert(int* x, int* y, int* z);
+  char getAccelUsingStatus(int* x, int* y, int* z);
+  void getAccelUsingDataready(int* x, int* y, int* z);
+  void getAccelUsingBDU(int* x, int* y, int* z);
+  void getAccelWithoutConvert(int* x, int* y, int* z);
 
   //******High Pass Filter******
   void setIntHPFData(uint8_t IntHPF);
@@ -163,19 +137,55 @@ class LIS2HH12 {
 
   //*****Inercial Interrupt*****
   void setIntMode(uint8_t IntMode, char IG);
+  void setAllAxis(char Axis, char IG);
   void setXIE(uint8_t XIE, char IG);
   void setYIE(uint8_t YIE, char IG);
   void setZIE(uint8_t ZIE, char IG);
-  char readINT(char IG);
-  void readAxisHInt(char* xh, char* yh, char* zh, char IG);
-  void readAxisLInt(char* xl, char* yl, char* zl, char IG);
+  char getINT(char IG);
+  void getAxisHInt(char* xh, char* yh, char* zh, char IG);
+  void getAxisLInt(char* xl, char* yl, char* zl, char IG);
   void setMinDurationINT(uint8_t Duration, char IG);
   void setDecrementINT(char Status, char IG);
-  void setWaitINT();
+  void setWaitINT(char Status, char IG);
+  // Interrupt generator 1 allows selecting a different threshold for
+  // each axis while interrupt 2 supports the same threshold
+  void setThresholdIG1(uint8_t X, uint8_t Y, uint8_t Z);
+  void setThresholdIG2(uint8_t Threshold);
+  void setLatchedINT(char Status, char IG);
+  void setPP_OD(char PP_OD);
+  // Implementar los ejemplos que da el datasheet en example.cpp
 
   //****6D/4D Orientation Detection****
+  // 6D is configured with setIntMode
+  // If you want to use 4D, you need to set 6D also need to set Z axis to 0
+  // and the next function (With the 4D mode you disabled Z axis)
+  void set4Dmode(char Status, char IG);
 
   //************FIFO************
+  void setFIFO_EN(char Status);
+  void setFIFO_ENthreshold(char Status);
+  void setFIDO_Mode(uint8_t FIFO);
+  void setFIFO_Threshold(uint8_t Threshold);  // FIFO deep
+  void setINT2Empty(char Status);
+  void setINT1Ovr(char Status);
+  void setIntFTH(char Status, char INT);
+  char getFTH();
+  char getOVR();
+  char getEMPTY();
+  char getFSS();
+
+  //**********Status**********
+  char getZYXOR();
+  char getZOR();
+  char getYOR();
+  char getXOR();
+  char getZYXDA();
+  char getZDA();
+  char getYDA();
+  char getXDA();
+
+  //***********Temp**********
+  uint16_t getTemp();
 
  private:
   uint8_t readRegister(uint8_t regis);
