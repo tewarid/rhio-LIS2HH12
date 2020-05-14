@@ -1,12 +1,11 @@
 #include <rhioJF-LIS2HH12.h>
 
-// Revisar interrupt generator
-
 //*******Constructor*******
 LIS2HH12::LIS2HH12() {
   chipSelectPin = 2;  // Choose the value
   I2CAddress = 0x1D;
   commInterface = I2C_MODE;
+  SPI_Wire = WIRE4;
   zerox = 0;
   zeroy = 0;
   zeroz = 0;
@@ -20,6 +19,7 @@ void LIS2HH12::begin(char Mode) {
       Wire.begin();
       break;
     case SPI_MODE:
+      writeRegister(2, LIS2HH12_CTRL4, 253);
       SPI.begin();
       pinMode(chipSelectPin, OUTPUT);
       digitalWrite(chipSelectPin, HIGH);
@@ -28,13 +28,15 @@ void LIS2HH12::begin(char Mode) {
       break;
   }
 }
-void LIS2HH12::setSPI(uint8_t csPin) { 
-  chipSelectPin = csPin; 
+void LIS2HH12::setSPI(uint8_t csPin, char SPI_WIRE) {
+  chipSelectPin = csPin;
+  SPI_Wire = SPI_WIRE;
+  if (SPI_Wire == WIRE3) {
+    writeRegister(1, LIS2HH12_CTRL4, 254);
+  }
 }
 
-void LIS2HH12::setI2C(uint8_t Address) {
-  I2CAddress = Address; 
-}
+void LIS2HH12::setI2C(uint8_t Address) { I2CAddress = Address; }
 
 void LIS2HH12::setBasicConfig() {
   writeRegister(23, LIS2HH12_CTRL1, 232);
@@ -74,9 +76,7 @@ void LIS2HH12::setFrequency(uint8_t ODR) {
  *    X     |    1
  *   None   |    0
  */
-void LIS2HH12::setAxis(uint8_t ZYX) { 
-writeRegister(ZYX, LIS2HH12_CTRL1, 248); 
-}
+void LIS2HH12::setAxis(uint8_t ZYX) { writeRegister(ZYX, LIS2HH12_CTRL1, 248); }
 
 void LIS2HH12::setLPFilters(char analogLPF, char digitalLPF) {  // Revisar
   writeRegister(0, LIS2HH12_CTRL4, 247);
@@ -137,11 +137,18 @@ void LIS2HH12::setActiveInactive(uint8_t threshold, uint8_t duration) {
   writeRegister(32, LIS2HH12_CTRL3, 223);
 }
 
-void LIS2HH12::setIntDataready(char IntDataReady) {
-  if (IntDataReady == 1) {
-    writeRegister(1, LIS2HH12_CTRL3, 254);
+void LIS2HH12::setIntDataready(char IntDataReady, char INT) {
+  if (INT == 1) {
+    writeRegister(0, LIS2HH12_CTRL3, 254);
+    if (IntDataReady == 1) {
+      writeRegister(1, LIS2HH12_CTRL3, 254);
+    }
+  } else {
+    writeRegister(0, LIS2HH12_CTRL6, 254);
+    if (IntDataReady == 1) {
+      writeRegister(1, LIS2HH12_CTRL6, 254);
+    }
   }
-  writeRegister(1, LIS2HH12_CTRL6, 254);
 }
 
 void LIS2HH12::setPolarityINT(char H_Lint) {
@@ -155,9 +162,7 @@ void LIS2HH12::setPolarityINT(char H_Lint) {
  *     4    |      0.122     |  32
  *     8    |      0.244     |  48
  */
-void LIS2HH12::setFS(uint8_t FS) { 
-  writeRegister(FS, LIS2HH12_CTRL4, 207); 
-}
+void LIS2HH12::setFS(uint8_t FS) { writeRegister(FS, LIS2HH12_CTRL4, 207); }
 
 /*----------------------------------------
  *        Action            |   mode
@@ -176,34 +181,56 @@ void LIS2HH12::setZeroLevel(int zx, int zy, int zz) {
   zeroz = zz;
 }
 
-void LIS2HH12::setInt2Boot() { 
-  writeRegister(32, LIS2HH12_CTRL6, 223); 
+void LIS2HH12::setInt2Boot(char Status) {
+  writeRegister(0, LIS2HH12_CTRL6, 223);
+  if (Status == 1) {
+    writeRegister(32, LIS2HH12_CTRL6, 223);
+  }
 }
 
-void LIS2HH12::setReboot() {
-  writeRegister(128, LIS2HH12_CTRL6, 127); 
+void LIS2HH12::setReboot() { writeRegister(128, LIS2HH12_CTRL6, 127); }
+
+/*----------------------------------------
+ *       Update accel       |   Dec
+ * ---------------------------------------
+ *      No decimation       |    0
+ *     Every 2 samples      |    16
+ *     Every 4 samples      |    32
+ *     Every 8 samples      |    48
+ */
+void LIS2HH12::setDecimation(uint8_t Dec) {
+  writeRegister(Dec, LIS2HH12_CTRL5, 207);
 }
 
-//******Modes Reading Accerlation Data******
-char LIS2HH12::readAccelUsingStatus(int* x, int* y, int* z) {  // Revisar
+void LIS2HH12::setDebug(char Debug) {
+  writeRegister(0, LIS2HH12_CTRL5, 127);
+  if (Debug == 1) {
+    writeRegister(128, LIS2HH12_CTRL5, 127);
+  }
+}
+
+void LIS2HH12::setSoftReset() { writeRegister(64, LIS2HH12_CTRL5, 191); }
+
+//******Modes Reading Acceleration Data******
+char LIS2HH12::getAccelUsingStatus(int* x, int* y, int* z) {  // Revisar
   int x0, y0, z0;
   char ZYXDA, ZYXOR;
-  char result=0;
+  char result = 0;
   ZYXDA = readbit(LIS2HH12_STATUS, 3);
   ZYXOR = readbit(LIS2HH12_STATUS, 7);
   if (ZYXDA == 1) {
-    if(ZYXOR==1){
+    if (ZYXOR == 1) {
       result = 1;
-    } 
+    }
     readAccel(&x0, &y0, &z0);
     *x = x0;
     *y = y0;
-    *z = z0;  
+    *z = z0;
   }
   return (result);
 }
 
-void LIS2HH12::readAccelUsingDataready(int* x, int* y, int* z) {
+void LIS2HH12::getAccelUsingDataready(int* x, int* y, int* z) {
   int x0, y0, z0;
   char int1, int2, H_L, drdy_int1, drdy_int2;
   drdy_int1 = readbit(LIS2HH12_CTRL3, 0);
@@ -226,7 +253,7 @@ void LIS2HH12::readAccelUsingDataready(int* x, int* y, int* z) {
   }
 }
 
-void LIS2HH12::readAccelUsingBDU(int* x, int* y, int* z) {
+void LIS2HH12::getAccelUsingBDU(int* x, int* y, int* z) {
   int x0, y0, z0;
   writeRegister(8, LIS2HH12_CTRL1, 247);
   readAccel(&x0, &y0, &z0);
@@ -235,7 +262,7 @@ void LIS2HH12::readAccelUsingBDU(int* x, int* y, int* z) {
   *z = z0;
 }
 
-void LIS2HH12::readAccelWithoutConvert(int* x, int* y, int* z) {
+void LIS2HH12::getAccelWithoutConvert(int* x, int* y, int* z) {
   uint8_t XL, XH, YL, YH, ZH, ZL;
   XL = readRegister(LIS2HH12_OUT_X_L);
   XH = readRegister(LIS2HH12_OUT_X_H);
@@ -267,12 +294,10 @@ void LIS2HH12::setIntHPFData(uint8_t IntHPF) {
  *       Normal       |   0
  *   Reference signal |   8
  */
-void LIS2HH12::setHPF(uint8_t HPF) { 
-  writeRegister(HPF, LIS2HH12_CTRL2, 231);
-}
+void LIS2HH12::setHPF(uint8_t HPF) { writeRegister(HPF, LIS2HH12_CTRL2, 231); }
 
 void LIS2HH12::setFDS(uint8_t OutData) {
-  if (OutData == OnHPF) {
+  if (OutData == 1) {
     writeRegister(4, LIS2HH12_CTRL2, 251);
   } else {
     writeRegister(0, LIS2HH12_CTRL2, 251);
@@ -339,104 +364,112 @@ void LIS2HH12::setIntGenerator2(char INT1, char INT2) {
  *   AND combination of axis requests |    128
  *   6-direction position recognition |    192
  */
-void LIS2HH12::setIntMode(uint8_t IntMode, char IG) {  // IG = 0 is IG1 and IG = 1  is IG2
-  if(IG==0) {
+void LIS2HH12::setIntMode(uint8_t IntMode,
+                          char IG) {  // IG = 0 is IG1 and IG = 1  is IG2
+  if (IG == 1) {
     writeRegister(IntMode, LIS2HH12_IG_CFG1, 63);
-  }
-  else {
+  } else {
     writeRegister(IntMode, LIS2HH12_IG_CFG2, 63);
   }
 }
 
-/*-------------------
-* XHIE | XLIE | XIE
-*--------------------
-*  0   |  0   |  0
-*  0   |  1   |  1
-*  1   |  0   |  2
-*  1   |  1   |  3
-*/
-void LIS2HH12::setXIE(uint8_t XIE, char IG) {
-  if(IG == 0) {
-    writeRegister(XIE, LIS2HH12_IG_CFG1, 252);
+void LIS2HH12::setAllAxis(char Axis, char IG) {
+  if (IG == 1) {
+    writeRegister(0, LIS2HH12_IG_CFG1, 192);
+    if (Axis == 1) {
+      writeRegister(63, LIS2HH12_IG_CFG1, 192);
+    }
+  } else {
+    writeRegister(0, LIS2HH12_IG_CFG2, 192);
+    if (Axis == 1) {
+      writeRegister(63, LIS2HH12_IG_CFG2, 192);
+    }
   }
-  else {
-    writeRegister(XIE, LIS2HH12_IG_CFG2, 252);
-  }
-}  
+}
 
 /*-------------------
-* YHIE | YLIE | YIE
-*--------------------
-*  0   |  0   |  0
-*  0   |  1   |  4
-*  1   |  0   |  8
-*  1   |  1   |  12
-*/
-void LIS2HH12::setXIE(uint8_t YIE, char IG) {
-  if(IG == 0) {
-    writeRegister(YIE, LIS2HH12_IG_CFG1, 243);
+ * XHIE | XLIE | XIE
+ *--------------------
+ *  0   |  0   |  0
+ *  0   |  1   |  1
+ *  1   |  0   |  2
+ *  1   |  1   |  3
+ */
+void LIS2HH12::setXIE(uint8_t XIE, char IG) {
+  if (IG == 1) {
+    writeRegister(XIE, LIS2HH12_IG_CFG1, 252);
+  } else {
+    writeRegister(XIE, LIS2HH12_IG_CFG2, 252);
   }
-  else {
+}
+
+/*-------------------
+ * YHIE | YLIE | YIE
+ *--------------------
+ *  0   |  0   |  0
+ *  0   |  1   |  4
+ *  1   |  0   |  8
+ *  1   |  1   |  12
+ */
+void LIS2HH12::setYIE(uint8_t YIE, char IG) {
+  if (IG == 1) {
+    writeRegister(YIE, LIS2HH12_IG_CFG1, 243);
+  } else {
     writeRegister(YIE, LIS2HH12_IG_CFG2, 243);
   }
-}  
- 
+}
+
 /*-------------------
-* ZHIE | ZLIE | ZIE
-*--------------------
-*  0   |  0   |  0
-*  0   |  1   |  16
-*  1   |  0   |  32
-*  1   |  1   |  48
-*/
-void LIS2HH12::setXIE(uint8_t ZIE, char IG) {
-  if(IG == 0) {
+ * ZHIE | ZLIE | ZIE
+ *--------------------
+ *  0   |  0   |  0
+ *  0   |  1   |  16
+ *  1   |  0   |  32
+ *  1   |  1   |  48
+ */
+void LIS2HH12::setZIE(uint8_t ZIE, char IG) {
+  if (IG == 1) {
     writeRegister(ZIE, LIS2HH12_IG_CFG1, 207);
-  }
-  else {
+  } else {
     writeRegister(ZIE, LIS2HH12_IG_CFG2, 207);
   }
 }
 
-char LIS2HH12::readINT(char IG) {
+char LIS2HH12::getINT(char IG) {
   char INTG;
-  if(IG == 0) {
+  if (IG == 1) {
     INTG = readbit(LIS2HH12_IG_SRC1, 6);
-  }
-  else {
+  } else {
     INTG = readbit(LIS2HH12_IG_SRC2, 6);
   }
-  return(IG);
+  return (INTG);
 }
 
-void LIS2HH12::readAxisHInt(char* xh, char* yh, char* zh, char IG) {
-  if(IG == 0) {
+void LIS2HH12::getAxisHInt(char* xh, char* yh, char* zh, char IG) {
+  if (IG == 1) {
     *xh = readbit(LIS2HH12_IG_SRC1, 1);
     *yh = readbit(LIS2HH12_IG_SRC1, 3);
     *zh = readbit(LIS2HH12_IG_SRC1, 5);
-  }
-  else {
+  } else {
     *xh = readbit(LIS2HH12_IG_SRC2, 1);
     *yh = readbit(LIS2HH12_IG_SRC2, 3);
-    *zh = readbit(LIS2HH12_IG_SRC2, 5);  
-  } 
+    *zh = readbit(LIS2HH12_IG_SRC2, 5);
+  }
 }
 
-void LIS2HH12::readAxisLInt(char* xl, char* yl, char* zl, char IG) {
-  if(IG == 0) {
+void LIS2HH12::getAxisLInt(char* xl, char* yl, char* zl, char IG) {
+  if (IG == 1) {
     *xl = readbit(LIS2HH12_IG_SRC1, 0);
     *yl = readbit(LIS2HH12_IG_SRC1, 2);
     *zl = readbit(LIS2HH12_IG_SRC1, 4);
-  }
-  else {
+  } else {
     *xl = readbit(LIS2HH12_IG_SRC2, 0);
     *yl = readbit(LIS2HH12_IG_SRC2, 2);
-    *zl = readbit(LIS2HH12_IG_SRC2, 4);  
-  }   
+    *zl = readbit(LIS2HH12_IG_SRC2, 4);
+  }
 }
 
- /*---------------------------------------
+/*---------------------------------------
  *      ODR    | Duration LSB value (ms)
  * --------------------------------------
  *      800    |        1.25
@@ -449,28 +482,244 @@ void LIS2HH12::readAxisLInt(char* xl, char* yl, char* zl, char IG) {
  * Duration time is measured in N/ODR, where N is the duration
  * register content
  */
-void LIS2HH12::setMinDurationINT(uint8_t Duration, char IG) { //Revisar info datasheet
-  if(IG == 0) {
+void LIS2HH12::setMinDurationINT(uint8_t Duration,
+                                 char IG) {  // Revisar info datasheet
+  if (IG == 1) {
     writeRegister(Duration, LIS2HH12_IG_DUR1, 128);
-  }
-  else {
+  } else {
     writeRegister(Duration, LIS2HH12_IG_DUR2, 128);
   }
 }
 
 void LIS2HH12::setDecrementINT(char Status, char IG) {
-  if(IG == 0) {
+  if (IG == 1) {
     writeRegister(0, LIS2HH12_CTRL7, 239);
-    if(Status == 1) {
+    if (Status == 1) {
       writeRegister(16, LIS2HH12_CTRL7, 239);
-    }  
-  }
-  else {
+    }
+  } else {
     writeRegister(0, LIS2HH12_CTRL7, 239);
-    if (Status == 1)
-      writeRegister(32, LIS2HH12_CTRL7, 223);
+    if (Status == 1) writeRegister(32, LIS2HH12_CTRL7, 223);
   }
 }
+
+void LIS2HH12::setWaitINT(char Status, char IG) {
+  if (IG == 1) {
+    writeRegister(0, LIS2HH12_CTRL7, 127);
+    if (Status == 1) {
+      writeRegister(128, LIS2HH12_CTRL7, 127);
+    }
+  } else {
+    writeRegister(0, LIS2HH12_CTRL7, 127);
+    if (Status == 1) writeRegister(128, LIS2HH12_CTRL7, 127);
+  }
+}
+
+/* ---------------------------------------
+ *  Full scale | Threshold LSB value (mg)
+ * --------------------------------------
+ *      2      |           8
+ *      4      |           16
+ *      8      |           31
+ *---------------------------------------
+ *The threshold is represented by 8 bits
+ */
+void LIS2HH12::setThresholdIG1(uint8_t X, uint8_t Y, uint8_t Z) {
+  writeRegister(X, LIS2HH12_IG_THS_X1, 0);
+  writeRegister(Y, LIS2HH12_IG_THS_Y1, 0);
+  writeRegister(Z, LIS2HH12_IG_THS_Z1, 0);
+}
+
+void LIS2HH12::setThresholdIG2(uint8_t Threshold) {
+  writeRegister(Threshold, LIS2HH12_IG_THS2, 0);
+}
+
+void LIS2HH12::setLatchedINT(char Status, char IG) {
+  if (IG == 1) {
+    writeRegister(0, LIS2HH12_CTRL7, 251);
+    if (Status == 1) {
+      writeRegister(4, LIS2HH12_CTRL7, 251);
+    }
+  } else {
+    writeRegister(0, LIS2HH12_CTRL7, 247);
+    if (Status == 1) {
+      writeRegister(8, LIS2HH12_CTRL7, 247);
+    }
+  }
+}
+
+void LIS2HH12::setPP_OD(char PP_OD) {
+  writeRegister(0, LIS2HH12_CTRL5, 254);
+  if (PP_OD == 1) {
+    writeRegister(1, LIS2HH12_CTRL5, 254);
+  }
+}
+
+//****6D/4D Orientation Detection****
+void LIS2HH12::set4Dmode(char Status, char IG) {
+  if (IG == 1) {
+    writeRegister(0, LIS2HH12_CTRL5, 254);
+    if (Status == 1) {
+      writeRegister(1, LIS2HH12_CTRL5, 254);
+    }
+  } else {
+    writeRegister(0, LIS2HH12_CTRL5, 253);
+    if (Status == 1) {
+      writeRegister(2, LIS2HH12_CTRL5, 253);
+    }
+  }
+}
+
+//************FIFO************
+void LIS2HH12::setFIFO_EN(char Status) {
+  writeRegister(0, LIS2HH12_CTRL3, 127);
+  if (Status == 1) {
+    writeRegister(128, LIS2HH12_CTRL3, 127);
+  }
+}
+
+void LIS2HH12::setFIFO_ENthreshold(char Status) {
+  writeRegister(0, LIS2HH12_CTRL3, 191);
+  if (Status == 1) {
+    writeRegister(64, LIS2HH12_CTRL3, 191);
+  }
+}
+
+/*----------------------------------
+ *        Mode            |  FIFO
+ *----------------------------------
+ *       Bypass mode      |   0
+ *        FIFO mode       |   32
+ *   Stream-to-FIFO mode  |   64
+ *  Bypass-to-Stream mode |   96
+ *   Bypass-to-FIFO mode  |   224
+ */
+void LIS2HH12::setFIDO_Mode(uint8_t FIFO) {
+  writeRegister(FIFO, LIS2HH12_FIFO_CTRL, 31);
+}
+
+void LIS2HH12::setFIFO_Threshold(uint8_t Threshold) {
+  uint8_t Threshold1;
+  Threshold1 = Threshold - 1;
+  writeRegister(Threshold1, LIS2HH12_FIFO_CTRL, 224);
+}
+
+char LIS2HH12::getFTH() {
+  char FTH;
+  FTH = readbit(LIS2HH12_FIFO_SRC, 7);
+  return (FTH);
+}
+
+char LIS2HH12::getOVR() {
+  char OVR;
+  OVR = readbit(LIS2HH12_FIFO_SRC, 6);
+  return (OVR);
+}
+
+char LIS2HH12::getEMPTY() {
+  char EMPTY;
+  EMPTY = readbit(LIS2HH12_FIFO_SRC, 5);
+  return (EMPTY);
+}
+
+char LIS2HH12::getFSS() {
+  char FSS;
+  uint8_t read;
+  read = readRegister(LIS2HH12_FIFO_SRC);
+  FSS = read & 31;
+  FSS += 1;
+  return (FSS);
+}
+
+void LIS2HH12::setINT2Empty(char Status) {
+  writeRegister(0, LIS2HH12_CTRL6, 251);
+  if (Status == 1) {
+    writeRegister(4, LIS2HH12_CTRL6, 251);
+  }
+}
+
+void LIS2HH12::setINT1Ovr(char Status) {
+  writeRegister(0, LIS2HH12_CTRL3, 251);
+  if (Status == 1) {
+    writeRegister(4, LIS2HH12_CTRL3, 251);
+  }
+}
+
+void LIS2HH12::setIntFTH(char Status, char INT) {
+  if (INT == 1) {
+    writeRegister(0, LIS2HH12_CTRL3, 253);
+    if (Status == 1) {
+      writeRegister(2, LIS2HH12_CTRL3, 253);
+    }
+  } else {
+    writeRegister(0, LIS2HH12_CTRL6, 253);
+    if (Status == 1) {
+      writeRegister(2, LIS2HH12_CTRL6, 253);
+    }
+  }
+}
+
+//**********Status**********
+char LIS2HH12::getZYXOR() {
+  char ZYXOR;
+  ZYXOR = readbit(LIS2HH12_STATUS, 7);
+  return (ZYXOR);
+}
+
+char LIS2HH12::getZOR() {
+  char ZOR;
+  ZOR = readbit(LIS2HH12_STATUS, 6);
+  return (ZOR);
+}
+
+char LIS2HH12::getYOR() {
+  char YOR;
+  YOR = readbit(LIS2HH12_STATUS, 5);
+  return (YOR);
+}
+
+char LIS2HH12::getXOR() {
+  char XOR;
+  XOR = readbit(LIS2HH12_STATUS, 4);
+  return (XOR);
+}
+
+char LIS2HH12::getZYXDA() {
+  char ZYXDA;
+  ZYXDA = readbit(LIS2HH12_STATUS, 3);
+  return (ZYXDA);
+}
+
+char LIS2HH12::getZDA() {
+  char ZDA;
+  ZDA = readbit(LIS2HH12_STATUS, 2);
+  return (ZDA);
+}
+
+char LIS2HH12::getYDA() {
+  char YDA;
+  YDA = readbit(LIS2HH12_STATUS, 1);
+  return (YDA);
+}
+
+char LIS2HH12::getXDA() {
+  char XDA;
+  XDA = readbit(LIS2HH12_STATUS, 0);
+  return (XDA);
+}
+
+//***********Temp**********
+uint16_t LIS2HH12::getTemp() {
+  uint8_t TEMP_L, TEMP_H;
+  uint16_t TEMP;
+  TEMP_L = readRegister(LIS2HH12_TEMP_L);
+  TEMP_H = readRegister(LIS2HH12_TEMP_H);
+  TEMP_H = TEMP_H << 8;
+  TEMP = TEMP_H | TEMP_L;
+  TEMP = TEMP * 0.125;
+  return (TEMP);
+}
+
 //*************************UTILITY*************************//
 uint8_t LIS2HH12::readRegister(uint8_t regis) {
   uint8_t result = 0;
@@ -502,10 +751,10 @@ uint8_t LIS2HH12::readRegister(uint8_t regis) {
 void LIS2HH12::writeRegister(uint8_t val, uint8_t regis, uint8_t bt) {
   // bt is a invert binary variable, with it you choose the bits
   // that you want read and change to cero
-  uint8_t read, resul, val2;
+  uint8_t read, result, val2;
   read = readRegister(regis);
-  resul = read & bt;
-  val2 = resul | val;
+  result = read & bt;
+  val2 = result | val;
   switch (commInterface) {
     case I2C_MODE:
       Wire.beginTransmission(I2CAddress);
@@ -515,7 +764,8 @@ void LIS2HH12::writeRegister(uint8_t val, uint8_t regis, uint8_t bt) {
       break;
 
     case SPI_MODE:  // Revisar
-      SPI.beginTransaction(SPISettings(LIS2HH12_SPI_CLOCK, MSBFIRST, LIS2HH12_SPI_MODE));
+      SPI.beginTransaction(
+          SPISettings(LIS2HH12_SPI_CLOCK, MSBFIRST, LIS2HH12_SPI_MODE));
       digitalWrite(chipSelectPin, LOW);
       SPI.transfer(regis);
       SPI.transfer(val2);
@@ -596,4 +846,3 @@ char LIS2HH12::readbit(uint8_t regis, int loc) {
   bit = val & 1;
   return bit;
 }
-
