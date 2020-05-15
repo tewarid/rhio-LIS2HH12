@@ -153,7 +153,6 @@ class LIS2HH12 {
   void setThresholdIG2(uint8_t Threshold);
   void setLatchedINT(char Status, char IG);
   void setPP_OD(char PP_OD);
-  // Implementar los ejemplos que da el datasheet en example.cpp
 
   //****6D/4D Orientation Detection****
   // 6D is configured with setIntMode
@@ -193,6 +192,7 @@ class LIS2HH12 {
   void writeRegister(uint8_t val, uint8_t regis, uint8_t bt);
   char readbit(uint8_t regis, int loc);
   int convert(int g, int axis);
+  char exists(uint8_t* array, uint8_t value);
 };
 
 #endif
