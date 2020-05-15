@@ -61,6 +61,11 @@ void LIS2HH12::setBasicConfig() {
  * Power Down |    0    |             |             |             |
  */
 void LIS2HH12::setFrequency(uint8_t ODR) {
+  uint8_t array[7] = {0, 16, 32, 48, 64, 80, 96};
+  if (!exists(array, ODR)) {
+    Serial.println("Wrong frequency value");
+    return;
+  }
   writeRegister(ODR, LIS2HH12_CTRL1, 143);
 }
 
@@ -76,7 +81,14 @@ void LIS2HH12::setFrequency(uint8_t ODR) {
  *    X     |    1
  *   None   |    0
  */
-void LIS2HH12::setAxis(uint8_t ZYX) { writeRegister(ZYX, LIS2HH12_CTRL1, 248); }
+void LIS2HH12::setAxis(uint8_t ZYX) {
+  uint8_t array[8] = {0, 1, 2, 3, 4, 5, 6, 7};
+  if (!exists(array, ZYX)) {
+    Serial.println("Wrong axis value");
+    return;
+  }
+  writeRegister(ZYX, LIS2HH12_CTRL1, 248);
+}
 
 void LIS2HH12::setLPFilters(char analogLPF, char digitalLPF) {  // Revisar
   writeRegister(0, LIS2HH12_CTRL4, 247);
@@ -98,6 +110,11 @@ void LIS2HH12::setLPFilters(char analogLPF, char digitalLPF) {  // Revisar
  *    50    |    192
  */
 void LIS2HH12::setanalogBandwidth(uint8_t BW) {
+  uint8_t array[4] = {0, 64, 128, 192};
+  if (!exists(array, BW)) {
+    Serial.println("Wrong bandwidth value");
+    return;
+  }
   writeRegister(BW, LIS2HH12_CTRL4, 63);
 }
 
@@ -110,6 +127,11 @@ void LIS2HH12::setanalogBandwidth(uint8_t BW) {
  *    ODR/200  |    96
  */
 void LIS2HH12::setdigitalLPF(uint8_t LPFcutOff) {  // Mismo registro que HPF?
+  uint8_t array[4] = {0, 32, 64, 96};
+  if (!exists(array, LPFcutOff)) {
+    Serial.println("Wrong cut off frequency value");
+    return;
+  }
   writeRegister(LPFcutOff, LIS2HH12_CTRL2, 159);
 }
 
@@ -132,6 +154,10 @@ void LIS2HH12::setdigitalLPF(uint8_t LPFcutOff) {  // Mismo registro que HPF?
 // The threshold is represented by 7 bits bit [6:0], bit7 must be set to 0
 // The duration is represented by 8 bits
 void LIS2HH12::setActiveInactive(uint8_t threshold, uint8_t duration) {
+  if (threshold >> 127) {
+    Serial.println("Threshold value is bigger than 127");
+    return;
+  }
   writeRegister(threshold, LIS2HH12_ACT_THS, 0);
   writeRegister(duration, LIS2HH12_ACT_DUR, 0);
   writeRegister(32, LIS2HH12_CTRL3, 223);
@@ -162,7 +188,14 @@ void LIS2HH12::setPolarityINT(char H_Lint) {
  *     4    |      0.122     |  32
  *     8    |      0.244     |  48
  */
-void LIS2HH12::setFS(uint8_t FS) { writeRegister(FS, LIS2HH12_CTRL4, 207); }
+void LIS2HH12::setFS(uint8_t FS) {
+  uint8_t array[4] = {0, 32, 48};
+  if (!exists(array, FS)) {
+    Serial.println("Wrong full-sacle value");
+    return;
+  }
+  writeRegister(FS, LIS2HH12_CTRL4, 207);
+}
 
 /*----------------------------------------
  *        Action            |   mode
@@ -172,6 +205,11 @@ void LIS2HH12::setFS(uint8_t FS) { writeRegister(FS, LIS2HH12_CTRL4, 207); }
  *  Negative sign self-test |    8
  */
 void LIS2HH12::setSelfTest(uint8_t mode) {
+  uint8_t array[3] = {0, 4, 8};
+  if (!exists(array, mode)) {
+    Serial.println("Wrong self test value");
+    return;
+  }
   writeRegister(mode, LIS2HH12_CTRL5, 243);
 }
 
@@ -199,6 +237,11 @@ void LIS2HH12::setReboot() { writeRegister(128, LIS2HH12_CTRL6, 127); }
  *     Every 8 samples      |    48
  */
 void LIS2HH12::setDecimation(uint8_t Dec) {
+  uint8_t array[4] = {0, 16, 32, 48};
+  if (!exists(array, Dec)) {
+    Serial.println("Wrong decimation value");
+    return;
+  }
   writeRegister(Dec, LIS2HH12_CTRL5, 207);
 }
 
@@ -285,6 +328,11 @@ void LIS2HH12::getAccelWithoutConvert(int* x, int* y, int* z) {
  *  dataHPF |  dataHPF |    3
  */
 void LIS2HH12::setIntHPFData(uint8_t IntHPF) {
+  uint8_t array[4] = {0, 1, 2, 3};
+  if (!exists(array, IntHPF)) {
+    Serial.println("Wrong INT HPF value");
+    return;
+  }
   writeRegister(IntHPF, LIS2HH12_CTRL2, 252);
 }
 
@@ -294,7 +342,14 @@ void LIS2HH12::setIntHPFData(uint8_t IntHPF) {
  *       Normal       |   0
  *   Reference signal |   8
  */
-void LIS2HH12::setHPF(uint8_t HPF) { writeRegister(HPF, LIS2HH12_CTRL2, 231); }
+void LIS2HH12::setHPF(uint8_t HPF) {
+  uint8_t array[2] = {0, 8};
+  if (!exists(array, HPF)) {
+    Serial.println("Wrong HPF mode value");
+    return;
+  }
+  writeRegister(HPF, LIS2HH12_CTRL2, 231);
+}
 
 void LIS2HH12::setFDS(uint8_t OutData) {
   if (OutData == 1) {
@@ -313,6 +368,11 @@ void LIS2HH12::setFDS(uint8_t OutData) {
  *    ODR/200  |    96
  */
 void LIS2HH12::setCutOffHPF(uint8_t HPFcutOff) {
+  uint8_t array[4] = {0, 32, 64, 96};
+  if (!exists(array, HPFcutOff)) {
+    Serial.println("Wrong cut off frequency value");
+    return;
+  }
   writeRegister(HPFcutOff, LIS2HH12_CTRL2, 159);
 }
 
@@ -365,7 +425,12 @@ void LIS2HH12::setIntGenerator2(char INT1, char INT2) {
  *   6-direction position recognition |    192
  */
 void LIS2HH12::setIntMode(uint8_t IntMode,
-                          char IG) {  // IG = 0 is IG1 and IG = 1  is IG2
+                          char IG) {  // IG = 1 is IG1 and IG = 2  is IG2
+  uint8_t array[4] = {0, 64, 128, 192};
+  if (!exists(array, IntMode)) {
+    Serial.println("Wrong INT mode value");
+    return;
+  }
   if (IG == 1) {
     writeRegister(IntMode, LIS2HH12_IG_CFG1, 63);
   } else {
@@ -396,6 +461,11 @@ void LIS2HH12::setAllAxis(char Axis, char IG) {
  *  1   |  1   |  3
  */
 void LIS2HH12::setXIE(uint8_t XIE, char IG) {
+  uint8_t array[4] = {0, 1, 2, 3};
+  if (!exists(array, XIE)) {
+    Serial.println("Wrong XIE value");
+    return;
+  }
   if (IG == 1) {
     writeRegister(XIE, LIS2HH12_IG_CFG1, 252);
   } else {
@@ -412,6 +482,11 @@ void LIS2HH12::setXIE(uint8_t XIE, char IG) {
  *  1   |  1   |  12
  */
 void LIS2HH12::setYIE(uint8_t YIE, char IG) {
+  uint8_t array[4] = {0, 4, 8, 12};
+  if (!exists(array, YIE)) {
+    Serial.println("Wrong YIE value");
+    return;
+  }
   if (IG == 1) {
     writeRegister(YIE, LIS2HH12_IG_CFG1, 243);
   } else {
@@ -428,6 +503,11 @@ void LIS2HH12::setYIE(uint8_t YIE, char IG) {
  *  1   |  1   |  48
  */
 void LIS2HH12::setZIE(uint8_t ZIE, char IG) {
+  uint8_t array[4] = {0, 16, 32, 48};
+  if (!exists(array, ZIE)) {
+    Serial.println("Wrong ZIE value");
+    return;
+  }
   if (IG == 1) {
     writeRegister(ZIE, LIS2HH12_IG_CFG1, 207);
   } else {
@@ -484,6 +564,9 @@ void LIS2HH12::getAxisLInt(char* xl, char* yl, char* zl, char IG) {
  */
 void LIS2HH12::setMinDurationINT(uint8_t Duration,
                                  char IG) {  // Revisar info datasheet
+  if (Duration >> 127) {
+    Serial.println("Duration value is bigger than 127");
+  }
   if (IG == 1) {
     writeRegister(Duration, LIS2HH12_IG_DUR1, 128);
   } else {
@@ -499,19 +582,21 @@ void LIS2HH12::setDecrementINT(char Status, char IG) {
     }
   } else {
     writeRegister(0, LIS2HH12_CTRL7, 239);
-    if (Status == 1) writeRegister(32, LIS2HH12_CTRL7, 223);
+    if (Status == 1) {
+      writeRegister(32, LIS2HH12_CTRL7, 223);
+    }
   }
 }
 
 void LIS2HH12::setWaitINT(char Status, char IG) {
   if (IG == 1) {
-    writeRegister(0, LIS2HH12_CTRL7, 127);
+    writeRegister(0, LIS2HH12_IG_DUR1, 127);
     if (Status == 1) {
-      writeRegister(128, LIS2HH12_CTRL7, 127);
+      writeRegister(128, LIS2HH12_IG_DUR1, 127);
     }
   } else {
-    writeRegister(0, LIS2HH12_CTRL7, 127);
-    if (Status == 1) writeRegister(128, LIS2HH12_CTRL7, 127);
+    writeRegister(0, LIS2HH12_IG_DUR2, 127);
+    if (Status == 1) writeRegister(128, LIS2HH12_IG_DUR2, 127);
   }
 }
 
@@ -558,14 +643,14 @@ void LIS2HH12::setPP_OD(char PP_OD) {
 //****6D/4D Orientation Detection****
 void LIS2HH12::set4Dmode(char Status, char IG) {
   if (IG == 1) {
-    writeRegister(0, LIS2HH12_CTRL5, 254);
+    writeRegister(0, LIS2HH12_CTRL7, 254);
     if (Status == 1) {
-      writeRegister(1, LIS2HH12_CTRL5, 254);
+      writeRegister(1, LIS2HH12_CTRL7, 254);
     }
   } else {
-    writeRegister(0, LIS2HH12_CTRL5, 253);
+    writeRegister(0, LIS2HH12_CTRL7, 253);
     if (Status == 1) {
-      writeRegister(2, LIS2HH12_CTRL5, 253);
+      writeRegister(2, LIS2HH12_CTRL7, 253);
     }
   }
 }
@@ -595,11 +680,20 @@ void LIS2HH12::setFIFO_ENthreshold(char Status) {
  *   Bypass-to-FIFO mode  |   224
  */
 void LIS2HH12::setFIDO_Mode(uint8_t FIFO) {
+  uint8_t array[5] = {0, 32, 64, 96, 224};
+  if (!exists(array, FIFO)) {
+    Serial.println("Wrong FIFO mode value");
+    return;
+  }
   writeRegister(FIFO, LIS2HH12_FIFO_CTRL, 31);
 }
 
 void LIS2HH12::setFIFO_Threshold(uint8_t Threshold) {
   uint8_t Threshold1;
+  if (Threshold >> 32) {
+    Serial.println("The fifo threshold limit is 32");
+    return;
+  }
   Threshold1 = Threshold - 1;
   writeRegister(Threshold1, LIS2HH12_FIFO_CTRL, 224);
 }
@@ -845,4 +939,15 @@ char LIS2HH12::readbit(uint8_t regis, int loc) {
   val = val >> loc;
   bit = val & 1;
   return bit;
+}
+
+char LIS2HH12::exists(uint8_t* array, uint8_t value) {
+  uint8_t* copyArr = array;
+  do {
+    if (*copyArr == value) {
+      return 1;
+    }
+  } while (*copyArr++);
+
+  return 0;
 }
