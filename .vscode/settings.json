@@ -2,5 +2,8 @@
     "cSpell.enableFiletypes": [
         "!cpp",
         "markdown"
-    ]
+    ],
+    "files.associations": {
+        "array": "cpp"
+    }
 }
