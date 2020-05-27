@@ -1,3 +1,15 @@
+/**
+ * Rhomb.io lis2hh12 library
+ *
+ * @author Jose Francisco Martí Martín
+ * @version 1.0.0
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ */
 #include <Arduino.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -85,8 +97,7 @@
 #define NOCHANGEALPF 1
 #define OFFDLPF 0
 #define ONDLPF 1
-#define ONHPF 1
-#define ONLPF 1
+#define ONDHPF 1
 
 class LIS2HH12 {
  public:
@@ -98,43 +109,254 @@ class LIS2HH12 {
   char SPI_Wire;
   float zerox, zeroy, zeroz;
 
-  //******Initialization******
+  /***************************************************************************
+   *                          Initialization
+   **************************************************************************/
+
+  /** @fn void begin(char Mode);
+   *  @brief Set the basic to run the sensor
+   *  @param mode You need to chose SPI or I2C
+   */
   void begin(char Mode);
+  /** @fn void setSPI(uint8_t csPin, char SPI_WIRE);
+   *  @brief Set the CS and the Wire
+   *  @param cdPin
+   *  @param SPI_WIRE
+   */
   void setSPI(uint8_t csPin, char SPI_WIRE);
+  /** @fn void setI2C(uint8_t Address);
+   *  @brief Change the I2C address
+   *  @param Address
+   */
   void setI2C(uint8_t Address);
 
-  //******Basic function******
+  /***************************************************************************
+   *                          Basic function
+   **************************************************************************/
+
+  /** @fn void setBasicConfig()
+   *  @brief Set the basic to run the sensor
+   */
   void setBasicConfig();
 
-  //*******Apliccation*******
+  /***************************************************************************
+   *                          Apliccation
+   **************************************************************************/
+
+  /** @fn char getIsMoving();
+   *  @brief return true if the sensor is moving
+   */
   char getIsMoving();
+  /** @fn float getActiveTime();
+   *  @brief return a time moving value
+   */
   float getActiveTime();
 
-  //******Operating Modes******
-  // There are a decimation filter cutoff frequency that depend of ODR
+  /***************************************************************************
+   *                          Operating Modes
+   **************************************************************************/
+
+  /** @fn void setFrequency(uint8_t ODR);
+   *  @brief set the sample measure frequency
+   *  There are a decimation filter cutoff frequency that depend of ODR
+   *  @param ODR decimal value to set the frequency
+   *  --------------------------------------------------------------------------
+   *  Frequency |   ODR   |  BW=400 Hz  |  BW=200 Hz  |  BW=100 Hz  |  BW=50 Hz
+   * ---------------------------------------------------------------------------
+   *                      |                   Discarded samples
+   * ---------------------------------------------------------------------------
+   *   800 Hz   |   96    |      1      |      4      |      7      |     14
+   *   400 Hz   |   80    |      1      |      1      |      4      |     7
+   *   200 Hz   |   64    |      1      |      1      |      1      |     4
+   *   100 Hz   |   48    |      1      |      1      |      1      |     1
+   *   50  Hz   |   32    |      1      |      -      |      -      |     -
+   *   10  Hz   |   16    |      1      |      -      |      -      |     -
+   * Power Down |    0    |             |             |             |
+   */
   void setFrequency(uint8_t ODR);
+  /** @fn void setAxis(uint8_t ZYX);
+   *  @brief set the measure axis
+   *  @param ZYX decimal value to set the axis
+   * -----------------------
+   *    Axis  |   ZYX
+   * ----------------------
+   *    ZYX   |    7
+   *    ZY    |    6
+   *    ZX    |    5
+   *    Z     |    4
+   *    YX    |    3
+   *    Y     |    2
+   *    X     |    1
+   *   None   |    0
+   */
+
   void setAxis(uint8_t ZYX);
+  /** @fn setDLPF(char DLPF);
+   *  @brief set digital low pass filter
+   *  Default mode is OFFDLPF. if you use ONDLPF, you can't use decimator
+   *  @param DLPF switch binary value
+   *  There are two specific macros: ONDLPF and OFFDLPF
+   */
   void setDLPF(char DLPF);
-  // The analog LPF have a default condition bandwidth of ODR/2 if you
-  // don't set the ALPF variable
+  /** @fn void setALPF(char ALPF);
+   *  @brief set the analog low pass filter
+   *  The analog ALPF have a default condition bandwidth of ODR/2 if you
+   *  don't set the ALPF variable.
+   *  @param ALPF switch binary value
+   * There are two specific macros: NOCHANGEALPF and CHANGEALPF
+   */
   void setALPF(char ALPF);
+  /** @fn setanalogBandwidth(uint8_t BW);
+   *  @brief set the analog filer bandwitch
+   *  @param BW decimal value to set the bandwitch
+   * -----------------------
+   *   (BW)Hz |    BW
+   * ----------------------
+   *    400   |    0
+   *    200   |    64
+   *    100   |    128
+   *    50    |    192
+   */
   void setanalogBandwidth(uint8_t BW);
+  /** @fn setdigitalLPF(uint8_t LPFcutOff);
+   *  @brief set the low pass filter cutoff
+   *  @param LPFcutoff decimal value to set the cutoff frequency
+   * -----------------------
+   * (Cut off)Hz | LPFcutOff
+   * ----------------------
+   *    ODR/50   |    0
+   *    ODR/100  |    32
+   *    ODR/9    |    64
+   *    ODR/200  |    96
+   */
   void setdigitalLPF(uint8_t LPFcutOff);
+  /** @fn setActiveInactive(uint8_t threshold, uint8_t duration);
+   *  @brief set the active/inactive function
+   *  You active this option when pass a threshold parameter
+   *  @param threshold decimal value that depend of the LSB value
+   *  @param duration decimal value that depend of the LSB value
+   *  The threshold is represented by 7 bits bit [6:0], bit7 must be set to 0
+   *  The duration is represented by 8 bits
+   * ---------------------------------------
+   *  Full scale | Threshold LSB value (mg)
+   * --------------------------------------
+   *      2      |       0.015625
+   *      4      |       0.03125
+   *      8      |       0.0625
+   *---------------------------------------
+   *      ODR    | Duration LSB value (s)
+   * --------------------------------------
+   *      800    |        0.01
+   *      400    |        0.02
+   *      200    |        0.04
+   *      100    |        0.08
+   *      50     |        0.16
+   *      10     |        0.8
+   */
   void setActiveInactive(uint8_t threshold, uint8_t duration);
+  /** setIntDataready(char Status, char INT);
+   *  @brief set the active/inactive function on a INT pad
+   *  @param Status switch binary value
+   *  There are two generic macros for Status: LIS_DISABLED and LIS_DISABLED
+   *  @param INT switch binary value
+   *  There are two specific macros for INT: INT1 and INT2
+   */
   void setIntDataready(char Status, char INT);
+  /** @fn setPolarityINT(char H_Lint);
+   *  @brief set the INT polarity
+   *  The default polarity is HIGH
+   *  @param H_Lint switch binary value
+   *  There are two specifics macros for H_LINT: HINT and LINT
+   */
   void setPolarityINT(char H_Lint);
+  /** @fn void setFS(uint8_t FS);
+   *  @brief set the accelerometer full scale
+   *  @param FS decimal value to set the full scale
+   * ----------------------------------
+   *   +/- g  |   Sensitivity  |  FS
+   * ---------------------------------
+   *     2    |      0.061     |  0
+   *     4    |      0.122     |  32
+   *     8    |      0.244     |  48
+   */
   void setFS(uint8_t FS);
+  /** @fn setSelfTest(uint8_t mode);
+   *  @brief set selt test
+   *  @param mode decimal value to set the test
+   * ----------------------------------------
+   *        Action            |   mode
+   * ---------------------------------------
+   *      Normal mode         |    0
+   *  Positive sign self-test |    4
+   *  Negative sign self-test |    8
+   */
   void setSelfTest(uint8_t mode);
+  /** @fn setZeroLevel(float zx, float zy, float zz);
+   *  @brief Function to set visually the zero level
+   *  This function doesn't change nothing in the measure, it's only visual
+   *  @param zx
+   *  @param zy
+   *  @param zz
+   *  You choose the exact value for each axis
+   */
   void setZeroLevel(float zx, float zy, float zz);
+  /** @fn setInt2Boot(char Status);
+   *  @brief set boot on the INT2 pad
+   *  @param Status switch binary value
+   *  There are two generic macros for Status: LIS_DISABLED and LIS_DISABLED
+   */
   void setInt2Boot(char Status);
+  /** @fn setReboot();
+   *  @brief Give the posible to reboot the code
+   */
   void setReboot();
+  /** @fn setDecimation(uint8_t Dec);
+   *  @brief set the samples update
+   *  @param Dec decimal value
+   * ----------------------------------------
+   *       Update accel       |   Dec
+   * ---------------------------------------
+   *      No decimation       |    0
+   *     Every 2 samples      |    16
+   *     Every 4 samples      |    32
+   *     Every 8 samples      |    48
+   */
   void setDecimation(uint8_t Dec);
+  /** @fn void setDebug(char Status);
+   *  @brief set the debug mode
+   *  You need to disabled the digital low pass filter (default mode)
+   *  to use decimator
+   *  @param Status switch binary value
+   *  There are two generic macros for Status: LIS_DISABLED and LIS_DISABLED
+   */
   void setDebug(char Status);
+  /** @fn void setSoftReset();
+   *  @brief Give the posibility to do a reset
+   */
   void setSoftReset();
+  /** @fn setFDS(char OutData);
+   *  @brief set the high pass filter(HPF) or the low pass filter (DLPF)
+   *  You need to know that for use DLPF you have to select ONDLP in the
+   * function setDLPF(char DLPF); Default value is decimator or DLPF
+   *  @param OutData switch binary value
+   *  There are two specific macros: ONDHPF and ONDLPF
+   *  The accelerometer can't have DLPF and DHPF at the same time.
+   */
   void setFDS(char OutData);
+  /** @fn setBDU(char Status);
+   *  @brief Block data update
+   *  If the reading of the acceleration data is particularly slow and can't be
+   *  synchronized with either the XYZDA bit or with DRDY signal, it's strongly
+   *  recommended to set BDU
+   *  @param Status switch binary value
+   *  There are two generic macros for Status: LIS_DISABLED and LIS_DISABLED
+   */
   void setBDU(char Status);
 
-  //******Modes Reading Accerlation Data******
+  /***************************************************************************
+   *                   Modes Reading Accerlation Data
+   **************************************************************************/
+
   char getAccelmG(float* x, float* y, float* z);
   void getAccelDataReadymG(float* x, float* y, float* z);
   void getAccelBDUmG(float* x, float* y, float* z);
