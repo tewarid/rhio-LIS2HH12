@@ -154,7 +154,7 @@ class LIS2HH12 {
   void setIntGenerator1(char INT_1, char INT_2);
   void setIntGenerator2(char INT_1, char INT_2);
 
-  //*****Inercial Interrupt*****
+  //*****Inertial Interrupt*****
   void setIntMode(uint8_t IntMode, char IG);
   void setXYZIE(char Status, char IG);
   void setXIE(uint8_t XIE, char IG);
@@ -172,8 +172,6 @@ class LIS2HH12 {
   void setThresholdIG2(uint8_t Threshold);
   void setLatchedIG(char Status, char IG);
   void setPP_OD(char PP_OD);
-
-  //****6D/4D Orientation Detection****
   // 6D is configured with setIntMode
   // If you want to use 4D, you need to set 6D also need to set Z axis to 0
   // and the next function (With the 4D mode you disabled Z axis)

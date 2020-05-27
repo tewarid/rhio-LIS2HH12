@@ -811,7 +811,6 @@ void LIS2HH12::setPP_OD(char PP_OD) {
   }
 }
 
-//****6D/4D Orientation Detection****
 void LIS2HH12::set4Dmode(char Status, char IG) {
   if (IG == IG1) {
     if (Status == LIS_DISABLED) {
