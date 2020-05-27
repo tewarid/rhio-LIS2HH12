@@ -5,7 +5,7 @@ LIS2HH12 accelerometer has 3-axis, temperature sensor and other advanced options
 
 ## Features  
 
-+ Read by SPI or I2C
++ Read by I2C
 + Read single or all axis  
 + Configure two interruptions generator and interruption pins
 + Read acceleration in g or mg 
@@ -24,7 +24,7 @@ The library design try to be easy visible with the following sections on the rhi
 
 + Operating Modes: With this functions you configure generic options of the sensor like frequency, bandwidth, low pass filter, software reset, debug, axis, etc. 
 
-+ Modes Reading Acceleration Data: You can read the differents modes of data. 
++ Reading Acceleration Data Modes : You can read the differents modes of data. 
   * Without convert, this is very helpful if you want to set the high pass filter.  
   *  You can read in g or mg unit. You can read each one with three differents functions.
 

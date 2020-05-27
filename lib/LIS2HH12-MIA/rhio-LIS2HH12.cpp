@@ -97,19 +97,7 @@ float LIS2HH12::getActiveTime() {
 }
 
 //******Operating Modes******
-/*-----------------------------------------------------------------------------
- *  Frequency |   ODR   |  BW=400 Hz  |  BW=200 Hz  |  BW=100 Hz  |  BW=50 Hz
- * ----------------------------------------------------------------------------
- *                      |                   Discarded samples
- * ----------------------------------------------------------------------------
- *   800 Hz   |   96    |      1      |      4      |      7      |     14
- *   400 Hz   |   80    |      1      |      1      |      4      |     7
- *   200 Hz   |   64    |      1      |      1      |      1      |     4
- *   100 Hz   |   48    |      1      |      1      |      1      |     1
- *   50  Hz   |   32    |      1      |      -      |      -      |     -
- *   10  Hz   |   16    |      1      |      -      |      -      |     -
- * Power Down |    0    |             |             |             |
- */
+
 void LIS2HH12::setFrequency(uint8_t ODR) {
   uint8_t array[7] = {0, 16, 32, 48, 64, 80, 96};
   if (!exists(array, ODR, 7)) {
@@ -118,19 +106,6 @@ void LIS2HH12::setFrequency(uint8_t ODR) {
   }
   writeRegister(ODR, LIS2HH12_CTRL1, 143);
 }
-
-/*-----------------------
- *    Axis  |   ZYX
- * ----------------------
- *    ZYX   |    7
- *    ZY    |    6
- *    ZX    |    5
- *    Z     |    4
- *    YX    |    3
- *    Y     |    2
- *    X     |    1
- *   None   |    0
- */
 void LIS2HH12::setAxis(uint8_t ZYX) {
   uint8_t array[8] = {0, 1, 2, 3, 4, 5, 6, 7};
   if (!exists(array, ZYX, 8)) {
@@ -158,14 +133,6 @@ void LIS2HH12::setALPF(char ALPF) {
   }
 }
 
-/*-----------------------
- *   (BW)Hz |    BW
- * ----------------------
- *    400   |    0
- *    200   |    64
- *    100   |    128
- *    50    |    192
- */
 void LIS2HH12::setanalogBandwidth(uint8_t BW) {
   uint8_t array[4] = {0, 64, 128, 192};
   if (!exists(array, BW, 4)) {
@@ -175,14 +142,6 @@ void LIS2HH12::setanalogBandwidth(uint8_t BW) {
   writeRegister(BW, LIS2HH12_CTRL4, 63);
 }
 
-/*-----------------------
- * (Cut off)Hz | LPFcutOff
- * ----------------------
- *    ODR/50   |    0
- *    ODR/100  |    32
- *    ODR/9    |    64
- *    ODR/200  |    96
- */
 void LIS2HH12::setdigitalLPF(uint8_t LPFcutOff) {  // Mismo registro que HPF?
   uint8_t array[4] = {0, 32, 64, 96};
   if (!exists(array, LPFcutOff, 4)) {
@@ -192,24 +151,6 @@ void LIS2HH12::setdigitalLPF(uint8_t LPFcutOff) {  // Mismo registro que HPF?
   writeRegister(LPFcutOff, LIS2HH12_CTRL2, 159);
 }
 
-/*---------------------------------------
- *  Full scale | Threshold LSB value (mg)
- * --------------------------------------
- *      2      |       0.015625
- *      4      |       0.03125
- *      8      |       0.0625
- *---------------------------------------
- *      ODR    | Duration LSB value (s)
- * --------------------------------------
- *      800    |        0.01
- *      400    |        0.02
- *      200    |        0.04
- *      100    |        0.08
- *      50     |        0.16
- *      10     |        0.8
- */
-// The threshold is represented by 7 bits bit [6:0], bit7 must be set to 0
-// The duration is represented by 8 bits
 void LIS2HH12::setActiveInactive(uint8_t threshold, uint8_t duration) {
   if (threshold >= 128) {
     Serial.println("Threshold value is bigger than 127");
@@ -248,13 +189,6 @@ void LIS2HH12::setPolarityINT(char H_Lint) {
   }
 }
 
-/*----------------------------------
- *   +/- g  |   Sensitivity  |  FS
- * ---------------------------------
- *     2    |      0.061     |  0
- *     4    |      0.122     |  32
- *     8    |      0.244     |  48
- */
 void LIS2HH12::setFS(uint8_t FS) {
   uint8_t array[4] = {0, 32, 48};
   if (!exists(array, FS, 4)) {
@@ -264,13 +198,6 @@ void LIS2HH12::setFS(uint8_t FS) {
   writeRegister(FS, LIS2HH12_CTRL4, 207);
 }
 
-/*----------------------------------------
- *        Action            |   mode
- * ---------------------------------------
- *      Normal mode         |    0
- *  Positive sign self-test |    4
- *  Negative sign self-test |    8
- */
 void LIS2HH12::setSelfTest(uint8_t mode) {
   uint8_t array[3] = {0, 4, 8};
   if (!exists(array, mode, 3)) {
@@ -297,14 +224,6 @@ void LIS2HH12::setInt2Boot(char Status) {
 
 void LIS2HH12::setReboot() { writeRegister(128, LIS2HH12_CTRL6, 127); }
 
-/*----------------------------------------
- *       Update accel       |   Dec
- * ---------------------------------------
- *      No decimation       |    0
- *     Every 2 samples      |    16
- *     Every 4 samples      |    32
- *     Every 8 samples      |    48
- */
 void LIS2HH12::setDecimation(uint8_t Dec) {
   uint8_t array[4] = {0, 16, 32, 48};
   if (!exists(array, Dec, 4)) {
@@ -326,10 +245,10 @@ void LIS2HH12::setDebug(char Status) {
 void LIS2HH12::setSoftReset() { writeRegister(64, LIS2HH12_CTRL5, 191); }
 
 void LIS2HH12::setFDS(char OutData) {
-  if (OutData == ONHPF) {
+  if (OutData == ONDHPF) {
     writeRegister(4, LIS2HH12_CTRL2, 251);
   }
-  if (OutData == ONLPF) {
+  if (OutData == ONDLPF) {
     writeRegister(0, LIS2HH12_CTRL2, 251);
   }
 }
