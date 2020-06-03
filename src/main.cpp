@@ -6,9 +6,9 @@ LIS2HH12 lis = LIS2HH12();
 void setup() {
   // put your setup code here, to run once:
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("LIS2HH12 example");
-  lis.begin(I2C_MODE);
+  lis.begin();
   lis.setBasicConfig();
 }
 
