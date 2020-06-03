@@ -267,7 +267,6 @@ class LIS2HH12 {
    *      10     |        0.8
    */
   void setActiveInactive(uint8_t threshold, uint8_t duration);
-
   /** setIntDataready(char Status, char INT);
    *  @brief set the active/inactive function on a INT pad
    *  @param Status switch binary value

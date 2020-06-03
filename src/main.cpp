@@ -14,7 +14,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  lis.getAccel(&x, &y, &z);
+  lis.getAccelmG(&x, &y, &z);
   Serial.print("x: ");
   Serial.println(x, 3);
   Serial.print("y: ");
