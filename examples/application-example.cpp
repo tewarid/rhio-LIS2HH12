@@ -31,4 +31,8 @@ void loop() {
   Serial.print("Active time 2: ");
   Serial.println(time2 / 1000, 2);
   time2 = lis.getActiveTime2();
+  time3 = lis.getStopTime();
+  Serial.print("Stop time: ");
+  Serial.println(time3 / 1000, 2);
+  delay(200);
 }

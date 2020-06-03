@@ -42,7 +42,7 @@ The library design try to be easy visible with the following sections on the rhi
 
 ## Principles functions 
 
-+ begin(Mode) 
++ begin() 
 + setFrequency(ODR)
 + setAxis(ZYX)
 + setFS(FS) 
