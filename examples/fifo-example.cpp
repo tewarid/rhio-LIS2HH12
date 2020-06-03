@@ -9,8 +9,8 @@ float x, y, z;
 void setup() {
   // put your setup code here, to run once:
 
-  Serial.begin(9600);
-  lis.begin(I2C_MODE);
+  Serial.begin(115200);
+  lis.begin();
   Serial.println("FIFO LIS2HH12 example");
   lis.setFrequency(48);  // 100 Hz
   lis.setAxis(7);        // XYZ

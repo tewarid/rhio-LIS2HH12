@@ -1,22 +1,21 @@
 #include <Arduino.h>
 #define S100_ESP32_WROOM_32_v1_0
 #include <rhio-LIS2HH12.h>
-#include <rhio-pinmap.h>
 
 LIS2HH12 lis = LIS2HH12();
 float x, y, z;
-char x2, y2, z2;
+uint8_t x2, y2, z2;
 
 void setup() {
   // put your setup code here, to run once:
 
-  Serial.begin(9600);
-  lis.begin(I2C_MODE);
+  Serial.begin(115200);
+  lis.begin();
   Serial.println("Free-fall LIS2HH12 example");
   lis.setFrequency(48);  // 100 Hz
   lis.setAxis(7);        // XYZ
   lis.setFS(0);          // 2g
-  lis.setFDS(ONLPF);
+  lis.setFDS(ONDLPF);
   lis.setPP_OD(PP);
   lis.setIntMode(128, IG1);
   lis.setXIE(1, IG1);

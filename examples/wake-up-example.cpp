@@ -5,18 +5,18 @@
 
 LIS2HH12 lis = LIS2HH12();
 float x, y, z;
-char x2, y2, z2;
+uint8_t x2, y2, z2;
 
 void setup() {
   // put your setup code here, to run once:
 
-  Serial.begin(9600);
-  lis.begin(I2C_MODE);
+  Serial.begin(115200);
+  lis.begin();
   Serial.println("Wake-up LIS2HH12 example");
   lis.setFrequency(16);  // 10 Hz
   lis.setAxis(3);        // XY
   lis.setFS(0);          // 2g
-  lis.setFDS(ONLPF);
+  lis.setFDS(ONDLPF);
   lis.setPP_OD(PP);
   lis.setIntMode(0, IG2);
   lis.setXIE(2, IG2);
@@ -28,7 +28,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   if (lis.getINT(IG2) == 1) {  // Also you can read only axis INT
-    Serial.println("Bro I wake-up");
+    Serial.println("I wake-up");
     lis.getAccel(&x, &y, &z);
     Serial.print("x: ");
     Serial.println(x);
