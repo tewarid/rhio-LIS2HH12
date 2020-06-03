@@ -4,6 +4,7 @@
         "markdown"
     ],
     "files.associations": {
-        "array": "cpp"
+        "array": "cpp",
+        "random": "cpp"
     }
 }
