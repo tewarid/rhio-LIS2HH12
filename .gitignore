@@ -8,11 +8,11 @@ lib
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-# git rm -r --cache .lib
-# git rm -r --cache .test
-# git rm -r --cache .include
+# git rm -r --cache lib
+# git rm -r --cache test
+# git rm -r --cache include
 # git rm -r --cache .travis.yml
-# git rm -r --cache ..vscode
+# git rm -r --cache .vscode
 
 
 
