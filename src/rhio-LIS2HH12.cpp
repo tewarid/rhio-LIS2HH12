@@ -562,8 +562,7 @@ void LIS2HH12::getAxisLInt(uint8_t* xl, uint8_t* yl, uint8_t* zl, char IG) {
   }
 }
 
-void LIS2HH12::setMinDurationIG(uint8_t Duration,
-                                char IG) {  // Revisar info datasheet
+void LIS2HH12::setMinDurationIG(uint8_t Duration, char IG) {
   if (Duration >= 128) {
     Serial.println("Duration value is bigger than 127");
   }
