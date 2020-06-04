@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#define S100_ESP32_WROOM_32_v1_0
 #include <rhio-LIS2HH12.h>
 
 float x, y, z, x1, y2, z1;

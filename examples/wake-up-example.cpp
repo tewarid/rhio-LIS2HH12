@@ -1,7 +1,5 @@
 #include <Arduino.h>
-#define S100_ESP32_WROOM_32_v1_0
 #include <rhio-LIS2HH12.h>
-#include <rhio-pinmap.h>
 
 LIS2HH12 lis = LIS2HH12();
 float x, y, z;

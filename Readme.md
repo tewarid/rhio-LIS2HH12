@@ -1,4 +1,4 @@
-# rhio-lis2hh12
+# rhio-LIS2HH12
 
 It's a library designed by rhomb.io and is open source.  
 LIS2HH12 accelerometer has 3-axis, temperature sensor and other advanced options. Through this library compatible with Arduino you can read the data from LIS2HH12.
