@@ -1,6 +1,6 @@
 .pio
 .vscode
-travis.yml
+.travis.yml
 include
 test
 lib
