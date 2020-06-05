@@ -1,5 +1,5 @@
 /**
- * Rhomb.io lis2hh12 library
+ * Rhomb.io LIS2HH12 library
  *
  * @author Jose Francisco Martí Martín
  * @version 0.1.0
@@ -11,14 +11,10 @@
  *
  */
 #include <Arduino.h>
-#include <SPI.h>
 #include <Wire.h>
 
 #ifndef LIS2HH12_h
 #define LIS2HH12_h
-
-#define LIS2HH12_SPI_CLOCK 10000000  // Max
-#define LIS2HH12_SPI_MODE SPI_MODE0
 
 /*************************** REGISTER MAP ***************************/
 #define LIS2HH12_RESERVED0 0x00  // Reserved. Do Not Access.
@@ -273,6 +269,7 @@ class LIS2HH12 {
    *      10     |        0.8
    */
   void setActiveInactive(uint8_t threshold, uint8_t duration);
+
   /** setIntDataready(char Status, char INT);
    *  @brief set the active/inactive function on a INT pad
    *  @param Status switch binary value

@@ -11,7 +11,10 @@ LIS2HH12::LIS2HH12() {
 
 //******Initialization******
 
-void LIS2HH12::begin() { Wire.begin(); }
+void LIS2HH12::begin() {
+  Wire.begin();
+  setSoftReset();
+}
 
 void LIS2HH12::setI2C(uint8_t Address) { I2CAddress = Address; }
 
