@@ -21,7 +21,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  char t = lis.getAccelmG(&x, &y, &z);
+  uint8_t t = lis.getAccelmG(&x, &y, &z);
   x1 = x;
   y2 = y;
   z1 = z;
