@@ -21,7 +21,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  // It's important to read the LIS2HH12 aplicattions notes to undersantd the
+  // position
   uint8_t x1, y1, z1, x2, y2, z2;
   lis.getAxisHInt(&x1, &y1, &z1, IG1);
   lis.getAxisLInt(&x2, &y2, &z2, IG1);

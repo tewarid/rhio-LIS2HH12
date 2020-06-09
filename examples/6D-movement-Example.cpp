@@ -23,6 +23,8 @@ void loop() {
   uint8_t x1, y1, z1, x2, y2, z2;
   lis.getAxisHInt(&x1, &y1, &z1, IG1);
   lis.getAxisLInt(&x2, &y2, &z2, IG1);
+  // It's important to read the LIS2HH12 aplicattions notes to undersantd the
+  // movement
   Serial.print("xH: ");
   Serial.println(x1);
   Serial.print("yH: ");
