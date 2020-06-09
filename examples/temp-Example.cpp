@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <rhio-LIS2HH12.h>
 
+// If you use the Halley Rhomb.io Hardware, you can't use this example
+
 float temp;
 LIS2HH12 lis = LIS2HH12();
 void setup() {

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <rhio-LIS2HH12.h>
 
-#define Threshold 4
+#define Threshold 4  // Buffer(FIFO) deep
 
 LIS2HH12 lis = LIS2HH12();
 float x, y, z;
