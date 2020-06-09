@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "LIS2HH12-Test tag rhio-LIS2HH12",
+			"path": "..\\..\\..\\..\\..\\..\\..\\..\\Documents\\PlatformIO\\Projects\\LIS2HH12-Test tag rhio-LIS2HH12"
+		},
+		{
+			"name": "Test tag LIS2HH12",
+			"path": "..\\..\\Test tag LIS2HH12"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"array": "cpp",
+			"random": "cpp"
+		}
+	}
+}
