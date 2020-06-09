@@ -467,6 +467,25 @@ void LIS2HH12::setIntMode(uint8_t IntMode, char IG) {
   }
 }
 
+void LIS2HH12::setXYZIE(char Status, char IG) {
+  if (IG == IG1) {
+    if (Status == LIS_DISABLED) {
+      writeRegister(0, LIS2HH12_IG_CFG1, 192);
+    }
+    if (Status == LIS_ENABLE) {
+      writeRegister(63, LIS2HH12_IG_CFG1, 192);
+    }
+  }
+  if (IG == IG2) {
+    if (Status == LIS_DISABLED) {
+      writeRegister(0, LIS2HH12_IG_CFG2, 192);
+    }
+    if (Status == LIS_ENABLE) {
+      writeRegister(63, LIS2HH12_IG_CFG2, 192);
+    }
+  }
+}
+
 void LIS2HH12::setXYZHIE(char Status, char IG) {
   if (IG == IG1) {
     if (Status == LIS_DISABLED) {

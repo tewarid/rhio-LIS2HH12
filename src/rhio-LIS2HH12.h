@@ -595,6 +595,18 @@ class LIS2HH12 {
   void setIntMode(uint8_t IntMode, char IG);
 
   /**
+   * @fn void setXYZIE(char Status, char IG);
+   *  @brief Enable or disabled all interrupt request
+   *  You need to select on what interrupt generator want to enable or disabled
+   *  interrupt request
+   *  @param Status
+   *  @param IG
+   *  There are two specific macros to IG (IG1 and IG2) and two generic to
+   *  Status (LIS_DISABLED and LIS_ENABLE)
+   */
+  void setXYZIE(char Status, char IG);
+
+  /**
    * @fn void setXYZHIE(char Status, char IG);
    *  @brief Enable or disabled high interrupt request (Out threshold)
    *  You need to select on what interrupt generator want to enable or disabled
