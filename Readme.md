@@ -1,6 +1,6 @@
 # rhio-LIS2HH12
 
-It's a library designed by rhomb.io and is open source.  
+It's a library designed by Rhomb.io and is open source.  
 LIS2HH12 accelerometer has 3-axis, temperature sensor and other advanced options. Through this library compatible with Arduino you can read the data from LIS2HH12.
 
 ## Features  
@@ -16,9 +16,9 @@ LIS2HH12 accelerometer has 3-axis, temperature sensor and other advanced options
 
 The library design try to be easy visible with the following sections on the rhio-LIS2HH12.h and rhio-LIS2HH12.cpp:  
 
-+ Initialization: The functions of this section are used for begin the sensor and configure I2C or SPI  
++ Initialization: The functions of this section are used for begin the sensor and configure I2C.  
 
-+ Basic function: Basic configuration of the sensor
++ Basic function: Basic configuration of the sensor.
 
 + Application: Two function for easy run of the sensor advanced options.
 
@@ -28,7 +28,7 @@ The library design try to be easy visible with the following sections on the rhi
   * Without convert, this is very helpful if you want to set the high pass filter.  
   *  You can read in g or mg unit. You can read each one with three differents functions.
 
-+ High pass filter (HPF): The function for set HPF  
++ High pass filter (HPF): The function for set HPF.  
   
 + Interruption generation (IG): This section is very important if you want to read the interruption from the pads. With this functions you enable the IG 1 or 2 on the interruptions pads that you need.  
 
@@ -53,3 +53,7 @@ On the set function you need to pass a table's decimal number to set the paramet
 ## Interruptions  
 
 Like we saw before, we have two posibilities here. First, you have two interrupt generator that you configure separate. And you can read this interruptions with some get functions. Also you can select what interrupt generator is enable in the INT pads. Although you have other configure interruption function that only can read by the INT path.
+
+## License  
+
+This library was developed by Rhomb.io and has a GNU/GPL v3 license. For more information, check the License file.
