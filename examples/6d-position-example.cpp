@@ -15,8 +15,8 @@ void setup() {
   lis.setXYZIE(1, IG1);
   lis.setIntMode(192, IG1);
   lis.setThresholdIG1(10, 10, 10);
-  // If yo do bigger this value, you have a worse resolution
-  // But it will be easier position detection
+  // If you do this value bigger, you get a worse resolution
+  // But it will be easier for position detection
 }
 
 void loop() {

@@ -1,58 +1,51 @@
 # rhio-LIS2HH12
 
-This a portable library based on Arduino to work with the LIS2H12 accelerometer. It has been developed by rhomb.io and is open source. LIS2HH12 accelerometer has 3-axis, temperature sensor and other advanced options.
+This is a portable library based on Arduino to work with the LIS2H12 accelerometer. It was developed by rhomb.io and it is open source. The LIS2HH12 accelerometer has 3-axis, a temperature sensor and other advanced features.
 
-## Features  
+## Features
 
-+ Read by I2C
-+ Read single or all axis  
-+ Configure two interruptions generator and interruption pins
-+ Read acceleration in g or mg 
-+ Read temperature in ºC
-+ Configure all sensor option
+* Read by I2C
+* Read single or all axis
+* Configure two interruption generators and interruption pins
+* Read acceleration in g or mg
+* Read temperature in ºC
+* Configure all sensor options
 
 ## Library structure
 
-The library design try to be easy visible with the following sections on the rhio-LIS2HH12.h and rhio-LIS2HH12.cpp.
+This library was designed to be easy to read with the following sections on the rhio-LIS2HH12.h and rhio-LIS2HH12.cpp
 
-+ Initialization: The functions of this section are used for begin the sensor and configure I2C.  
+* Initialization: The functions of this section are used to start the sensor and configure I2C.
+* Basic function: Basic configuration of the sensor.
+* Application: Two functions to easily run the sensor advanced options.
+* Operating Modes: A set of functions to configure generic options of the sensor like frequency, bandwidth, low pass filter, software reset, debug, axis, etc.
+* Reading Acceleration Data Modes : You can read the different modes of data.
+    * Use without conversion if you want to set the high pass filter.
+    * Get data in g or mg units. Each one can be read with three different functions.
+* High pass filter (HPF): The function for setting HPF.
+* Interruption generation (IG): This section is needed if you want to read the interruption from the pads. With this functions you enable the IG 1 or 2 on the interruption pads that you need.
+* Inertial Interrupt: The main function is "setIntMode(IntMode, IG)" because with it you can develop different applications. There are other important ones for enabling the axis interruption. Get this interuptions and set the interruption behavior for minimum duration of the signal to create an interruption, a threshold interruption, etc.
+* FIFO: Use if you want to save data. With this you configure the FIFO, enable FIFO, enable deep FIFO and how deep it will be. Set FIFO interruption signals or read signals to know the FIFO status.
+* STATUS: "Get" functions to know well the system behavior.
+* Temp: It's a function to measure the temperature.
 
-+ Basic function: Basic configuration of the sensor.
+## Main functions
 
-+ Application: Two function for easy run of the sensor advanced options.
+* begin()
+* setFrequency(ODR)
+* setAxis(ZYX)
+* setFS(FS)
+* getAccel(&x, &y, &z)
 
-+ Operating Modes: With this functions you configure generic options of the sensor like frequency, bandwidth, low pass filter, software reset, debug, axis, etc. 
+On the "set" functions you need to pass a table's decimal number to set the parameters.
 
-+ Reading Acceleration Data Modes : You can read the differents modes of data. 
-  * Without convert, this is very helpful if you want to set the high pass filter.  
-  *  You can read in g or mg unit. You can read each one with three differents functions.
+## Interruptions
 
-+ High pass filter (HPF): The function for set HPF.  
-  
-+ Interruption generation (IG): This section is very important if you want to read the interruption from the pads. With this functions you enable the IG 1 or 2 on the interruptions pads that you need.  
+As stated before, there are two posibilities here:
 
-+ Inertial Interrupt: One of the most important functions here is the "setIntMode(IntMode, IG)" because with it you can develop differents applications. There are other importants for enable axis interruption, get this interuptions and set the interruption behavior for minimum duration of the signal to create an interruption, threshold interruption, etc.  
-  
-+ FIFO: Very usefull if you want to save data. With this you configure the FIFO, enable FIFO, enable deep FIFO and what deep. Set FIFO interruption signals or read signal to know the FIFO status.  
-  
-+ STATUS: Get functions to know well the system behavior.
+* The first one, you have two interrupt generators that you configure separately. You can read these interruptions with some get functions.
+* The other one, you can select which interrupt generator is enabled in the INT pads. Even though these generators are configured, some of them can only be read on the INT pads.
 
-+ Temp: It's an only one function to measure the temperature
-
-## Main functions 
-
-+ begin() 
-+ setFrequency(ODR)
-+ setAxis(ZYX)
-+ setFS(FS) 
-+ getAccel(&x, &y, &z)
-
-On the set function you need to pass a table's decimal number to set the parameters. 
-
-## Interruptions  
-
-Like we saw before, we have two posibilities here. First, you have two interrupt generator that you configure separate. And you can read this interruptions with some get functions. Also you can select what interrupt generator is enable in the INT pads. Although you have other configure interruption function that only can read by the INT path.
-
-## License  
+## License
 
 This library was developed by rhomb.io and has a GNU/GPL v3 license. For more information, check the License file.

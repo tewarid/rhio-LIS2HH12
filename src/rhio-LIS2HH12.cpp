@@ -208,7 +208,7 @@ void LIS2HH12::setPolarityINT(char H_Lint) {
 void LIS2HH12::setFS(uint8_t FS) {
   uint8_t array[4] = {0, 32, 48};
   if (!exists(array, FS, 4)) {
-    Serial.println("Wrong full-sacle value");
+    Serial.println("Wrong full-scale value");
     return;
   }
   writeRegister(FS, LIS2HH12_CTRL4, 207);
@@ -905,8 +905,8 @@ uint8_t LIS2HH12::readRegister(uint8_t regis) {
 }
 
 void LIS2HH12::writeRegister(uint8_t val, uint8_t regis, uint8_t bt) {
-  // bt is a invert binary variable, with it you choose the bits
-  // that you want read and change to cero
+  // bt is an invert binary variable, with it you choose the bits
+  // that you want read and change to zero
   uint8_t read, result, val2;
   read = readRegister(regis);
   result = read & bt;
