@@ -40,6 +40,6 @@ void loop() {
     lis.setFIFO_Mode(32);
   }
   samples = lis.getFSS();
-  Serial.print("Value's number without read: ");
+  Serial.print("Unread values: ");
   Serial.println(samples);
 }

@@ -27,7 +27,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   if (lis.getINT(IG1) == 1) {  // Also you can read only axis INT
-    Serial.println("Bro I free-fall");
+    Serial.println("I free-fall");
     lis.getAccel(&x, &y, &z);
     Serial.print("x: ");
     Serial.println(x);

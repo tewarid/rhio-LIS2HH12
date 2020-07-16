@@ -32,7 +32,8 @@ void loop() {
     Serial.println(x);
     Serial.print("y: ");
     Serial.println(y);
-    Serial.print("z: ");  // The Z isn't set, don't read anything
+    Serial.print(
+        "z: ");  // The Z isn't set to be read. Nothing should show here.
     Serial.println(z);
   }
   lis.getAxisHInt(&x2, &y2, &z2, IG2);
