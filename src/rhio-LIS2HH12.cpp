@@ -107,7 +107,7 @@ uint8_t LIS2HH12::getIsMoving() {
 
 float LIS2HH12::getActiveTime() { return movingTime; }
 
-float LIS2HH12::getActiveTime2() { return movingTime10; }
+float LIS2HH12::getTimeUntil10Min() { return movingTime10; }
 
 float LIS2HH12::getStopTime() { return StopTime; }
 

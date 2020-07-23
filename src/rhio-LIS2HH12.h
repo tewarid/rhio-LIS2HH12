@@ -2,7 +2,7 @@
  * Rhomb.io LIS2HH12 library
  *
  * @author Jose Francisco Martí Martín
- * @version 0.1.0
+ * @version 0.1.2
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,9 @@
 
 class LIS2HH12 {
  public:
-  //*******Constructor*******
+  /***************************************************************************
+   *                          Constructor
+   **************************************************************************/
 
   LIS2HH12();
   uint8_t I2CAddress;
@@ -105,14 +107,14 @@ class LIS2HH12 {
 
   /**
    * @fn void begin();
-   *  @brief Set the basics to run the sensor
-   *  I2C default communication
+   *  @brief Set the basics to run the sensor.
+   *  I2C default communication.
    */
   void begin();
 
   /**
    * @fn void setI2C(uint8_t Address);
-   *  @brief Change I2C address
+   *  @brief Change I2C address.
    *  @param Address
    */
   void setI2C(uint8_t Address);
@@ -123,7 +125,7 @@ class LIS2HH12 {
 
   /**
    * @fn void setBasicConfig()
-   *  @brief Set the basics to run the sensor
+   *  @brief Set the basics to run the sensor.
    */
   void setBasicConfig();
 
@@ -132,27 +134,27 @@ class LIS2HH12 {
    **************************************************************************/
 
   /**
-   * @fn char getIsMoving();
-   *  @brief return true if the sensor is moving
+   * @fn uint8_t getIsMoving();
+   *  @brief Return true if the sensor is moving.
    *  All getActiveTime depends on this function.
    */
   uint8_t getIsMoving();
 
   /**
    * @fn float getActiveTime();
-   *  @brief return a time moving value
+   *  @brief Return a time moving value.
    */
   float getActiveTime();
 
   /**
-   * @fn float getActiveTime2();
-   *  @brief return a time moving value including a 10 min maximum waiting
+   * @fn float getTimeUntil10Min();
+   *  @brief Return a time moving value including a 10 min maximum waiting.
    */
-  float getActiveTime2();
+  float getTimeUntil10Min();
 
   /**
-   * @fn getStopTime();
-   *  @brief return a stop time
+   * @fn float getStopTime();
+   *  @brief Return a stop time.
    */
   float getStopTime();
 
@@ -162,9 +164,9 @@ class LIS2HH12 {
 
   /**
    * @fn void setFrequency(uint8_t ODR);
-   *  @brief set the sample measure frequency
-   *  There is a decimation filter cutoff frequency that depends on ODR
-   *  @param ODR decimal value to set the frequency
+   *  @brief Set the sample measure frequency.
+   *  There is a decimation filter cutoff frequency that depends on ODR.
+   *  @param ODR decimal value to set the frequency.
    *  --------------------------------------------------------------------------
    *  Frequency |   ODR   |  BW=400 Hz  |  BW=200 Hz  |  BW=100 Hz  |  BW=50 Hz
    * ---------------------------------------------------------------------------
@@ -182,8 +184,8 @@ class LIS2HH12 {
 
   /**
    * @fn void setAxis(uint8_t ZYX);
-   *  @brief set which axis is being read
-   *  @param ZYX decimal value to set the axis
+   *  @brief Set which axis is being read.
+   *  @param ZYX decimal value to set the axis.
    * -----------------------
    *    Axis  |   ZYX
    * ----------------------
@@ -199,28 +201,28 @@ class LIS2HH12 {
   void setAxis(uint8_t ZYX);
 
   /**
-   * @fn setDLPF(char DLPF);
-   *  @brief set digital low pass filter
-   *  Default mode is OFFDLPF. if you use ONDLPF, you can't use decimator
-   *  @param DLPF switch binary value
-   *  There are two specific macros: ONDLPF and OFFDLPF
+   * @fn void setDLPF(char DLPF);
+   *  @brief Set digital low pass filter.
+   *  Default mode is OFFDLPF. if you use ONDLPF, you can't use decimator.
+   *  @param DLPF switch binary value.
+   *  There are two specific macros: ONDLPF and OFFDLPF.
    */
   void setDLPF(char DLPF);
 
   /**
    * @fn void setALPF(char ALPF);
-   *  @brief set the analog low pass filter
+   *  @brief Set the analog low pass filter.
    *  The analog ALPF has a default condition bandwidth of ODR/2 if you
    *  don't set the ALPF variable.
-   *  @param ALPF switch binary value
-   * There are two specific macros: NOCHANGEALPF and CHANGEALPF
+   *  @param ALPF switch binary value.
+   * There are two specific macros: NOCHANGEALPF and CHANGEALPF.
    */
   void setALPF(char ALPF);
 
   /**
-   * @fn setanalogBandwidth(uint8_t BW);
-   *  @brief set the analog filter bandwidth
-   *  @param BW decimal value to set the bandwidth
+   * @fn void setanalogBandwidth(uint8_t BW);
+   *  @brief Set the analog filter bandwidth.
+   *  @param BW decimal value to set the bandwidth.
    * -----------------------
    *   (BW)Hz |    BW
    * ----------------------
@@ -232,9 +234,9 @@ class LIS2HH12 {
   void setanalogBandwidth(uint8_t BW);
 
   /**
-   * @fn setdigitalLPF(uint8_t LPFcutOff);
-   *  @brief set the low pass filter cutoff
-   *  @param LPFcutoff decimal value to set the cutoff frequency
+   * @fn void setdigitalLPF(uint8_t LPFcutOff);
+   *  @brief Set the low pass filter cutoff.
+   *  @param LPFcutoff decimal value to set the cutoff frequency.
    * -----------------------
    * (Cut off)Hz | LPFcutOff
    * ----------------------
@@ -246,13 +248,13 @@ class LIS2HH12 {
   void setdigitalLPF(uint8_t LPFcutOff);
 
   /**
-   * @fn setActiveInactive(uint8_t threshold, uint8_t duration);
-   *  @brief set the active/inactive function
-   *  You activate this option when it passes a threshold parameter
-   *  @param threshold decimal value that depends on the LSB value
-   *  @param duration decimal value that depends on the LSB value
-   *  The threshold is represented by 7 bits bit [6:0], bit7 must be set to 0
-   *  The duration is represented by 8 bits
+   * @fn void setActiveInactive(uint8_t threshold, uint8_t duration);
+   *  @brief Set the active/inactive function.
+   *  You activate this option when it passes a threshold parameter.
+   *  @param threshold decimal value that depends on the LSB value.
+   *  @param duration decimal value that depends on the LSB value.
+   *  The threshold is represented by 7 bits bit [6:0], bit7 must be set to 0.
+   *  The duration is represented by 8 bits.
    * ---------------------------------------
    *  Full scale | Threshold LSB value (mg)
    * --------------------------------------
@@ -271,28 +273,28 @@ class LIS2HH12 {
    */
   void setActiveInactive(uint8_t threshold, uint8_t duration);
 
-  /** setIntDataready(char Status, char INT);
-   *  @brief set the active/inactive function on an INT pad
-   *  @param Status switch binary value
-   *  There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED
-   *  @param INT switch binary value
-   *  There are two specific macros for INT: INT1 and INT2
+  /** @fn void setIntDataready(char Status, char INT);
+   *   @brief Set the active/inactive function on an INT pad.
+   *   @param Status switch binary value.
+   *   There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED.
+   *   @param INT switch binary value.
+   *   There are two specific macros for INT: INT1 and INT2.
    */
   void setIntDataready(char Status, char INT);
 
   /**
-   * @fn setPolarityINT(char H_Lint);
-   *  @brief set the INT polarity
-   *  The default polarity is HIGH
-   *  @param H_Lint switch binary value
-   *  There are two specifics macros for H_LINT: HINT and LINT
+   * @fn void setPolarityINT(char H_Lint);
+   *  @brief Set the INT polarity.
+   *  The default polarity is HIGH.
+   *  @param H_Lint switch binary value.
+   *  There are two specifics macros for H_LINT: HINT and LINT.
    */
   void setPolarityINT(char H_Lint);
 
   /**
    * @fn void setFS(uint8_t FS);
-   *  @brief set the accelerometer full scale
-   *  @param FS decimal value to set the full scale
+   *  @brief Set the accelerometer full scale.
+   *  @param FS decimal value to set the full scale.
    * ----------------------------------
    *   +/- g  |   Sensitivity  |  FS
    * ---------------------------------
@@ -303,9 +305,9 @@ class LIS2HH12 {
   void setFS(uint8_t FS);
 
   /**
-   * @fn setSelfTest(uint8_t mode);
-   *  @brief set selt test
-   *  @param mode decimal value to set the test
+   * @fn void setSelfTest(uint8_t mode);
+   *  @brief Set selt test.
+   *  @param mode decimal value to set the test.
    * ----------------------------------------
    *        Action            |   mode
    * ---------------------------------------
@@ -316,34 +318,34 @@ class LIS2HH12 {
   void setSelfTest(uint8_t mode);
 
   /**
-   * @fn setZeroLevel(float zx, float zy, float zz);
-   *  @brief Function to set visually the zero level
-   *  This function doesn't modify the values, it's only visual
+   * @fn void setZeroLevel(float zx, float zy, float zz);
+   *  @brief Function to set visually the zero level.
+   *  This function doesn't modify the values, it's only visual.
    *  @param zx
    *  @param zy
    *  @param zz
-   *  You choose the exact value for each axis
+   *  You choose the exact value for each axis.
    */
   void setZeroLevel(float zx, float zy, float zz);
 
   /**
-   * @fn setInt2Boot(char Status);
-   *  @brief set boot on the INT2 pad
-   *  @param Status switch binary value
-   *  There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED
+   * @fn void setInt2Boot(char Status);
+   *  @brief Set boot on the INT2 pad.
+   *  @param Status switch binary value.
+   *  There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED.
    */
   void setInt2Boot(char Status);
 
   /**
-   * @fn setReboot();
-   *  @brief Give the possibility to reboot the code
+   * @fn void setReboot();
+   *  @brief Give the possibility to reboot the code.
    */
   void setReboot();
 
   /**
-   * @fn setDecimation(uint8_t Dec);
-   *  @brief set the samples update
-   *  @param Dec decimal value
+   * @fn void setDecimation(uint8_t Dec);
+   *  @brief Set the samples update.
+   *  @param Dec decimal value.
    * ----------------------------------------
    *       Update accel       |   Dec
    * ---------------------------------------
@@ -356,39 +358,39 @@ class LIS2HH12 {
 
   /**
    * @fn void setDebug(char Status);
-   *  @brief set the debug mode
+   *  @brief Set the debug mode.
    *  You need to disable the digital low pass filter (default mode)
-   *  to use decimator
-   *  @param Status switch binary value
-   *  There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED
+   *  to use decimator.
+   *  @param Status switch binary value.
+   *  There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED.
    */
   void setDebug(char Status);
 
   /**
    * @fn void setSoftReset();
-   *  @brief Give the posibility to do a reset
+   *  @brief Give the posibility to do a reset.
    */
   void setSoftReset();
 
   /**
-   * @fn setFDS(char OutData);
-   *  @brief set the high pass filter(HPF) or the low pass filter (DLPF)
+   * @fn void setFDS(char OutData);
+   *  @brief Set the high pass filter(HPF) or the low pass filter (DLPF).
    *  You need to know that for use DLPF you have to select ONDLP in the
-   * function setDLPF(char DLPF); Default value is decimator or DLPF
-   *  @param OutData switch binary value
-   *  There are two specific macros: ONDHPF and ONDLPF
+   *  function setDLPF(char DLPF); Default value is decimator or DLPF.
+   *  @param OutData switch binary value.
+   *  There are two specific macros: ONDHPF and ONDLPF.
    *  The accelerometer can't have DLPF and DHPF at the same time.
    */
   void setFDS(char OutData);
 
   /**
-   * @fn setBDU(char Status);
-   *  @brief Block data update
+   * @fn void setBDU(char Status);
+   *  @brief Block data update.
    *  If the reading of the acceleration data is particularly slow and can't be
    *  synchronized with either the XYZDA bit or with DRDY signal, it's strongly
-   *  recommended to set BDU
-   *  @param Status switch binary value
-   *  There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED
+   *  recommended to set BDU.
+   *  @param Status switch binary value.
+   *  There are two generic macros for Status: LIS_ENABLED and LIS_DISABLED.
    */
   void setBDU(char Status);
 
@@ -398,86 +400,82 @@ class LIS2HH12 {
 
   /**
    * @fn char getAccelmG(float* x, float* y, float* z);
-   *  @brief Get the data accel in mg
-   *  @return XYZ overwritting the previous data (1)
+   *  @brief Get the data accel in mg.
+   *  @return XYZ overwritting the previous data (1).
    *  @param x
    *  @param y
    *  @param z
-   *  All parameters are pointers
+   *  All parameters are pointers.
    */
   uint8_t getAccelmG(float* x, float* y, float* z);
 
   /**
    * @fn void getAccelDataReadymG(float* x, float* y, float* z);
-   *  @brief Get the data accel in mg when the device is active
-   *  If the device is flat, there aren't any values
+   *  @brief Get the data accel in mg when the device is active.
+   *  If the device is flat, there aren't any values.
    *  @param x
    *  @param y
    *  @param z
-   *  All parameters are pointers
+   *  All parameters are pointers.
    */
   void getAccelDataReadymG(float* x, float* y, float* z);
 
   /**
    * @fn void getAccelBDUmG(float* x, float* y, float* z);
-   *  @brief Get the data accel in mg when the BDU is active
+   *  @brief Get the data accel in mg when the BDU is active. All parameters are
+   *  pointers.
    *  @param x
    *  @param y
    *  @param z
-   *  All parameters are pointers
    *  @see void setBDU(char Status);
    */
   void getAccelBDUmG(float* x, float* y, float* z);
 
   /**
    * @fn char getAccel(float* x, float* y, float* z);
-   *  @brief Get the data accel in g
+   *  @brief Get the data accel in g.
    *  It's the same mode as getAccelmG(float* x, float* y, float* z) but
-   *  when it is measured in g
-   *  @return XYZ overwritting the previous data (1)
+   *  when it is measured in g. All parameters are pointers.
+   *  @return XYZ overwritting the previous data (1).
    *  @param x
    *  @param y
    *  @param z
-   *  All parameters are pointers
    */
   uint8_t getAccel(float* x, float* y, float* z);
 
   /**
    * @fn void getAccelDataReady(float* x, float* y, float* z);
-   *  @brief Get the data accel in g when the device is active
+   *  @brief Get the data accel in g when the device is active.
    *  It's the same mode as getAccelDataReadymG(float* x, float* y,
-   *  float* z) but when it is measured in g
+   *  float* z) but when it is measured in g. All parameters are pointers.
    *  @param x
    *  @param y
    *  @param z
-   *  All parameters are pointers
    */
   void getAccelDataReady(float* x, float* y, float* z);
 
   /**
    * @fn void getAccelBDUmG(float* x, float* y, float* z);
-   *  @brief Get the data accel in g with the BDU is active
+   *  @brief Get the data accel in g with the BDU is active.
    *  It's the same model that getAccelBDUmG(float* x, float* y, float* z); but
-   *  when it is measured in g
+   *  when it is measured in g. All parameters are pointers.
    *  @param x
    *  @param y
    *  @param z
-   *  All parameters are pointers
    */
   void getAccelBDU(float* x, float* y, float* z);
 
   /**
    * @fn void getAccelRAW(int* x, int* y, int* z);
-   *  @brief Get the data accel in LSB value
+   *  @brief Get the data accel in LSB value.
    *  It's a important function when you use the high pass filter. You set
    *  with this value the reference register.
-   *  It's important to know the library converts the values.
+   *  It's important to know the library converts the values. All parameters are
+   *  pointers. You can see the explication in this private function.
    *  @param x
    *  @param y
    *  @param z
-   *  All parameters are pointers
    *  @see convert(int g, int axis);
-   *  You can see the explication in this private function
    */
   void getAccelRAW(int* x, int* y, int* z);
 
@@ -487,9 +485,9 @@ class LIS2HH12 {
 
   /**
    * @fn void setIntHPFData(uint8_t IntHPF);
-   *  @brief Set the reference value to generate a interruption
+   *  @brief Set the reference value to generate a interruption.
    *  You can set the interrupt generator to use the high pass filter
-   *  data or the normal data
+   *  data or the normal data.
    *  @param IntHPF
    * -------------------------------
    *   INT1   |   INT2   |  IntHPF
@@ -503,7 +501,7 @@ class LIS2HH12 {
 
   /**
    * @fn void setHPF(uint8_t HPF);
-   *  @brief Select the high pass filter mode
+   *  @brief Select the high pass filter mode.
    *  @param HPF
    *-------------------------------
    *        Mode        |   HPF
@@ -514,8 +512,8 @@ class LIS2HH12 {
   void setHPF(uint8_t HPF);
 
   /**
-   * @fn setCutOffHPF(uint8_t HPFcutOff);
-   *  @brief Select the high pass filter cut off
+   * @fn void setCutOffHPF(uint8_t HPFcutOff);
+   *  @brief Select the high pass filter cut off.
    *  @param HPFcutOff
    *-----------------------
    * (Cut off)Hz | HPFcutOff
@@ -528,8 +526,8 @@ class LIS2HH12 {
   void setCutOffHPF(uint8_t HPFcutOff);
 
   /**
-   * @fn setReference(uint16_t x, uint16_t y, uint16_t z);
-   * @brief Set reference high pass filter LSB value
+   * @fn void setReference(uint16_t x, uint16_t y, uint16_t z);
+   * @brief Set reference high pass filter LSB value.
    * @param x
    * @param y
    * @param z
@@ -537,8 +535,8 @@ class LIS2HH12 {
   void setReference(uint16_t x, uint16_t y, uint16_t z);
 
   /**
-   * @fn sertReferencemG(float x, float y, float z);
-   *  @brief Set reference high pass filter mg value
+   * @fn void sertReferencemG(float x, float y, float z);
+   *  @brief Set reference high pass filter mg value.
    *  There isn't a set reference in g because it's important to a have a high
    *  resolution in the filter.
    *  @param x
@@ -553,23 +551,23 @@ class LIS2HH12 {
 
   /**
    * @fn void setIntGenerator1(char INT_1, char INT_2);
-   *  @brief Selects where go the interrupt generator 1 (IG1)
-   *  You can select if the IG1 go to INT1 pad or/and INT2 pad
+   *  @brief Selects where go the interrupt generator 1 (IG1).
+   *  You can select if the IG1 go to INT1 pad or/and INT2 pad.
    *  @param INT_1
    *  @param INT_2
    *  There are four specific macros (DISABLED_INT1, DISABLED_INT2, ENABLE_INT1
-   *  and ENABLE_INT2)
+   *  and ENABLE_INT2).
    */
   void setIntGenerator1(char INT_1, char INT_2);
 
   /**
    * @fn void setIntGenerator2(char INT_1, char INT_2);
-   *  @brief Selects where go the interrupt generator 2 (IG2)
-   *  You can select if the IG2 goes to INT1 pad or/and INT2 pad
+   *  @brief Selects where go the interrupt generator 2 (IG2).
+   *  You can select if the IG2 goes to INT1 pad or/and INT2 pad.
    *  @param INT_1
    *  @param INT_2
    *  There are four specific macros (DISABLED_INT1, DISABLED_INT2, ENABLE_INT1
-   *  and ENABLE_INT2)
+   *  and ENABLE_INT2).
    */
   void setIntGenerator2(char INT_1, char INT_2);
 
@@ -580,7 +578,7 @@ class LIS2HH12 {
   /**
    * @fn void setIntMode(uint8_t IntMode, char IG);
    *  @brief Sets interrupt generator (IG) mode
-   *  You select the IG mode
+   *  You select the IG mode.
    *  @param IntMode
    *  @param IG
    * -------------------------------------------------
@@ -591,51 +589,51 @@ class LIS2HH12 {
    *   AND combination of axis requests |    128
    *   6-direction position recognition |    192
    *
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  There are two specific macros to IG (IG1 and IG2).
    */
   void setIntMode(uint8_t IntMode, char IG);
 
   /**
    * @fn void setXYZIE(char Status, char IG);
-   *  @brief Enable or disabled all interrupt request
+   *  @brief Enable or disabled all interrupt request.
    *  You need to select which interrupt generator is to enable or disabled the
-   *  interrupt request
+   *  interrupt request.
    *  @param Status
    *  @param IG
    *  There are two specific macros to IG (IG1 and IG2) and two generic to
-   *  Status (LIS_DISABLED and LIS_ENABLE)
+   *  Status (LIS_DISABLED and LIS_ENABLE).
    */
   void setXYZIE(char Status, char IG);
 
   /**
    * @fn void setXYZHIE(char Status, char IG);
-   *  @brief Enable or disabled HIGH interrupt request (Out threshold)
+   *  @brief Enable or disabled HIGH interrupt request (Out threshold).
    *  You need to select which interrupt generator is to enable or disabled the
-   *  interrupt request
+   *  interrupt request.
    *  @param Status
    *  @param IG
    *  There are two specific macros to IG (IG1 and IG2) and two generic to
-   *  Status (LIS_DISABLED and LIS_ENABLE)
+   *  Status (LIS_DISABLED and LIS_ENABLE).
    */
   void setXYZHIE(char Status, char IG);
 
   /**
    * @fn void setXYZLIE(char Status, char IG);
-   *  @brief Enable or disabled low interrupt request (On threshold)
+   *  @brief Enable or disabled low interrupt request (On threshold).
    *  You need to select which interrupt generator is to enable or disabled the
-   *  interrupt request
+   *  interrupt request.
    *  @param Status
    *  @param IG
    *  There are two specific macros to IG (IG1 and IG2) and two generic to
-   *  Status (LIS_DISABLED and LIS_ENABLE)
+   *  Status (LIS_DISABLED and LIS_ENABLE).
    */
   void setXYZLIE(char Status, char IG);
 
   /**
    * @fn void setXIE(uint8_t XIE, char IG);
-   *  @brief Enable or disabled X axis interrupt request
+   *  @brief Enable or disabled X axis interrupt request.
    *  You need to select which interrupt generator is to enable or disabled the
-   *  X axis interrupt request
+   *  X axis interrupt request.
    *  @param XIE
    *  @param IG
    *  -------------------
@@ -645,15 +643,15 @@ class LIS2HH12 {
    *   0   |  1   |  1
    *   1   |  0   |  2
    *   1   |  1   |  3
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  There are two specific macros to IG (IG1 and IG2).
    */
   void setXIE(uint8_t XIE, char IG);
 
   /**
    * @fn void setYIE(uint8_t YIE, char IG);
-   *  @brief Enable or disabled Y axis interrupt request
+   *  @brief Enable or disabled Y axis interrupt request.
    *  You need to select which interrupt generator is to enable or disabled the
-   *  Y axis interrupt request
+   *  Y axis interrupt request.
    *  @param YIE
    *  @param IG
    *  -------------------
@@ -663,15 +661,15 @@ class LIS2HH12 {
    *   0   |  1   |  4
    *   1   |  0   |  8
    *   1   |  1   |  12
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  There are two specific macros to IG (IG1 and IG2).
    */
   void setYIE(uint8_t YIE, char IG);
 
   /**
    * @fn void setZIE(uint8_t ZIE, char IG);
-   *  @brief Enable or disabled Z axis interrupt request
+   *  @brief Enable or disabled Z axis interrupt request.
    *  You need to select which interrupt generator is to enable or disabled the
-   *  Z axis interrupt request
+   *  Z axis interrupt request.
    *  @param ZIE
    *  @param IG
    *  -------------------
@@ -681,25 +679,25 @@ class LIS2HH12 {
    *    0   |  1   |  16
    *    1   |  0   |  32
    *    1   |  1   |  48
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  There are two specific macros to IG (IG1 and IG2).
    */
   void setZIE(uint8_t ZIE, char IG);
 
   /**
    * @fn uint8_t getINT(char IG);
-   *  @brief Gets the interrupt data of or/and axis
-   *  You need to select which interrupt generator is to get data
+   *  @brief Gets the interrupt data of or/and axis.
+   *  You need to select which interrupt generator is to get data.
    *  @param IG
-   *  @return The interrupt generator value
-   *  The return depends on the interrupt mode
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  @return The interrupt generator value.
+   *  The return depends on the interrupt mode.
+   *  There are two specific macros to IG (IG1 and IG2).
    */
   uint8_t getINT(char IG);
 
   /**
    * @fn void getAxisHInt(char* xh, char* yh, char* zh, char IG);
-   *  @brief Gets interrupt data
-   *  xh, yh, and zh are active when the the interrupt contition is verified
+   *  @brief Gets interrupt data.
+   *  xh, yh, and zh are active when the the interrupt contition is verified.
    *  The axes are active when the data exceeds the threshold and the
    *  duration is longer than the minimum duration set.
    *  You need to select which interrupt generator is to get data.
@@ -707,7 +705,7 @@ class LIS2HH12 {
    *  @param xh
    *  @param yh
    *  @param zh
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  There are two specific macros to IG (IG1 and IG2).
    *  @see setMinDurationIG(uint8_t Duration, char IG);
    *  @see setThresholdIG1(uint8_t X, uint8_t Y, uint8_t Z);
    *  @see setThresholdIG2(uint8_t Threshold);
@@ -716,7 +714,7 @@ class LIS2HH12 {
 
   /**
    * @fn void getAxisLInt(char* xl, char* yl, char* zl, char IG);
-   *  @brief Gets interrupt data
+   *  @brief Gets interrupt data.
    *  xl, yl, and zl are active when the the interrupt contition isn't verified
    *  The axes are active when the data doesn't exceed the threshold.
    *  You need to select which interrupt generator is to get data.
@@ -724,7 +722,7 @@ class LIS2HH12 {
    *  @param xl
    *  @param yl
    *  @param zl
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  There are two specific macros to IG (IG1 and IG2).
    *  @see setMinDurationIG(uint8_t Duration, char IG);
    *  @see setThresholdIG1(uint8_t X, uint8_t Y, uint8_t Z);
    *  @see setThresholdIG2(uint8_t Threshold);
@@ -734,12 +732,12 @@ class LIS2HH12 {
   /**
    * @fn void setMinDurationIG(uint8_t Duration, char IG);
    *  @brief Sets time
-   *  Selects the minimum time that data needs to be higher than the threshold
+   *  Selects the minimum time that data needs to be higher than the threshold.
    * to generate an interruption, You need to select which interrupt generator
    * is to set the duration.
    *  @param IG
    *  @param Duration
-   *  There are two specific macros to IG (IG1 and IG2)
+   *  There are two specific macros to IG (IG1 and IG2).
    *  ---------------------------------------
    *      ODR    | Duration LSB value (ms)
    *    --------------------------------------
@@ -749,17 +747,17 @@ class LIS2HH12 {
    *      100    |        10
    *      50     |        20
    *      10     |        100
-   *  The duration is represented by 7 bits DUR[6:0]
+   *  The duration is represented by 7 bits DUR[6:0].
    *  Duration time is measured in N/ODR, where N is the duration
-   *  register content
-   *  Example: ODR = 10 Hz -> Duration LSB value is 100 ms
-   *  If I select 100 like Duration, the real duration is 100 * 100 = 10000 ms
+   *  register content.
+   *  Example: ODR = 10 Hz -> Duration LSB value is 100 ms.
+   *  If I select 100 like Duration, the real duration is 100 * 100 = 10000 ms.
    */
   void setMinDurationIG(uint8_t Duration, char IG);
 
   /**
    * @fn void setDecrementIG(char Status, char IG);
-   *  @brief Sets the interrupt genearator performance
+   *  @brief Sets the interrupt genearator performance.
    *  The generator disables the interruption inmediately when the condition
    *  isn't verified. It's important to see the datasheet section to
    *  undertand how it works.You need to select which interrupt generator
@@ -767,13 +765,13 @@ class LIS2HH12 {
    *  @param IG
    *  @param Status
    *  There are two specific macros to IG (IG1 and IG2) two generic to
-   *  Status (LIS_DISABLED and LIS_ENABLE)
+   *  Status (LIS_DISABLED and LIS_ENABLE).
    */
   void setDecrementIG(char Status, char IG);
 
   /**
    * @fn void setWaitIG(char Status, char IG);
-   *  @brief Sets the interrupt genearator performance
+   *  @brief Sets the interrupt genearator performance.
    *  The generator waits when the interrupt contition is verified and the same
    *  happens when it is no longer verified. See the datasheet section to
    *  undertand how it works.
@@ -788,9 +786,9 @@ class LIS2HH12 {
 
   /**
    * @fn void setThresholdIG1(uint8_t X, uint8_t Y, uint8_t Z);
-   *  @brief Sets the interrupt generator 1 threshold
+   *  @brief Sets the interrupt generator 1 threshold.
    *  Interrupt generator 1 allows selecting a different threshold for
-   *  each axis
+   *  each axis.
    *  @param X
    *  @param Y
    *  @param Z
@@ -801,17 +799,17 @@ class LIS2HH12 {
    *        4      |           16
    *        8      |           31
    *    ---------------------------------------
-   *  The threshold is represented by 8 bits
-   *  Example: Full scale = 2 -> Threshold LSB value is 8 mg
+   *  The threshold is represented by 8 bits.
+   *  Example: Full scale = 2 -> Threshold LSB value is 8 mg.
    *  If I select 100 like X, the real X threshold is 100 * 8 = 800 mg and the
-   *  same for the other axes
+   *  same for the other axes.
    */
   void setThresholdIG1(uint8_t X, uint8_t Y, uint8_t Z);
 
   /**
    * @fn void setThresholdIG2(uint8_t Threshold);
-   *  @brief Sets the interrupt generator 2 threshold
-   *  Interrupt generator 2 supports the same threshold to all axis
+   *  @brief Sets the interrupt generator 2 threshold.
+   *  Interrupt generator 2 supports the same threshold to all axis.
    *  @param Threshold
    *  ---------------------------------------
    *    Full scale | Threshold LSB value (mg)
@@ -820,16 +818,16 @@ class LIS2HH12 {
    *        4      |           16
    *        8      |           31
    *    ---------------------------------------
-   *  The threshold is represented by 8 bits
-   *  Example: Full scale = 4 -> Threshold LSB value is 16 mg
+   *  The threshold is represented by 8 bits.
+   *  Example: Full scale = 4 -> Threshold LSB value is 16 mg.
    *  If I select 100 like Threshold, the real threshold is 100 * 16 = 1600 mg
-   *  to all axis
+   *  to all axis.
    */
   void setThresholdIG2(uint8_t Threshold);
 
   /**
    * @fn void setLatchedIG(char Status, char IG);
-   *  @brief Request must be latched or not
+   *  @brief Request must be latched or not.
    *  If the latched is enable, whenever an interrupt condition is applied, the
    *  interrupt signal remains HIGH even if the condition returns to a
    *  non-interrupt status until another read of the interruption happens. You
@@ -837,28 +835,28 @@ class LIS2HH12 {
    *  @param Status
    *  @param IG
    *  There are two specific macros to IG (IG1 and IG2) two generic to
-   *  Status (LIS_DISABLED and LIS_ENABLE)
+   *  Status (LIS_DISABLED and LIS_ENABLE).
    */
   void setLatchedIG(char Status, char IG);
 
   /**
    * @fn void setPP_OD(char PP_OD);
-   *  @brief It allows changing the pin behavior from Push-pull to open drain
+   *  @brief It allows changing the pin behavior from Push-pull to open drain.
    *  @param PP_OD
-   *  There are two specific macros to PP_OD (PP and OD)
+   *  There are two specific macros to PP_OD (PP and OD).
    */
   void setPP_OD(char PP_OD);
 
   /**
    * @fn void set4Dmode(char Status, char IG);
-   *  @brief Set the 4D mode
+   *  @brief Set the 4D mode.
    *  6D must be configured with setIntMode. If you want to use 4D, you need to
    *  set 6D, also need to set Z axis request to 0. (With the 4D mode you
-   *  disabled Z axis)
+   *  disabled Z axis).
    *  @param Status
    *  @param IG
    *  There are two specific macros to IG (IG1 and IG2) two generic to
-   *  Status (LIS_DISABLED and LIS_ENABLE)
+   *  Status (LIS_DISABLED and LIS_ENABLE).
    */
   void set4Dmode(char Status, char IG);
 
@@ -868,23 +866,23 @@ class LIS2HH12 {
 
   /**
    * @fn void setEnableFIFO(char Status);
-   *  @brief It allows to enable the FIFO
+   *  @brief It allows to enable the FIFO.
    *  @param Status
-   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE)
+   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE).
    */
   void setEnableFIFO(char Status);
 
   /**
    * @fn void setEnableFIFOThreshold(char Status);
-   *  @brief It allows to enable the FIFO threshold
+   *  @brief It allows to enable the FIFO threshold.
    *  @param Status
-   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE)
+   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE).
    */
   void setEnableFIFOThreshold(char Status);
 
   /**
    * @fn void setFIFO_Mode(uint8_t FIFO);
-   *  @brief It allows to select the FIFO mode
+   *  @brief It allows to select the FIFO mode.
    *  @param FIFO
    *  ----------------------------------
    *        Mode            |  FIFO
@@ -899,7 +897,7 @@ class LIS2HH12 {
 
   /**
    * @fn void setFIFO_Threshold(uint8_t Threshold);
-   *  @brief It allows to set the FIFO threshold
+   *  @brief It allows to set the FIFO threshold.
    *  @param Threshold
    *  This threshold is the FIFO's deep with a maximum of 32.
    */
@@ -909,7 +907,7 @@ class LIS2HH12 {
    * @fn void setINT2Empty(char Status);
    *  @brief It allows to drive the EMPTY signal on the INT2 pad.
    *  @param Status
-   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE)
+   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE).
    *  EMPTY is HIGH when there aren't any values without read.
    */
   void setINT2Empty(char Status);
@@ -918,7 +916,7 @@ class LIS2HH12 {
    * @fn void setINT1Ovr(char Status);
    *  @brief It allows to drive the OVR signal on the INT1 pad.
    *  @param Status
-   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE)
+   *  There are two generic macros to Status (LIS_DISABLED and LIS_ENABLE).
    *  OVR is HIGH when FIFO buffer is full.
    */
   void setINT1Ovr(char Status);
@@ -937,32 +935,32 @@ class LIS2HH12 {
 
   /**
    * @fn uint8_t getFTH();
-   *  @brief It allows to read the FTH signal
-   *  @return FTH
+   *  @brief It allows to read the FTH signal.
+   *  @return FTH.
    *  FTH is HIGH when the measure's values are higher than FIFO threshold.
    */
   uint8_t getFTH();
 
   /**
    * @fn uint8_t getOVR();
-   *  @brief It allows to read the OVR signal
-   *  @return OVR
+   *  @brief It allows to read the OVR signal.
+   *  @return OVR.
    *  OVR is HIGH when FIFO buffer is full.
    */
   uint8_t getOVR();
 
   /**
    * @fn uint8_t getEMPTY();
-   *  @brief It allows to read the EMPTY signal
-   *  @return EMPTY
+   *  @brief It allows to read the EMPTY signal.
+   *  @return EMPTY.
    *  EMPTY is HIGH when there aren't any values without read.
    */
   uint8_t getEMPTY();
 
   /**
    * @fn uint8_t getFSS();
-   *  @brief It allows to read the FSS signal
-   *  @return FSS
+   *  @brief It allows to read the FSS signal.
+   *  @return FSS.
    *  The current number of unread samples stored in the FIFO buffer.
    */
   uint8_t getFSS();
@@ -973,65 +971,65 @@ class LIS2HH12 {
 
   /**
    * @fn uint8_t getZYXOR();
-   *  @brief X, Y, Z axes data overun
-   *  @return ZYXOR
-   *  1 -> A new set of data has overwritten the previous set
+   *  @brief X, Y, Z axes data overun.
+   *  @return ZYXOR.
+   *  1 -> A new set of data has overwritten the previous set.
    */
   uint8_t getZYXOR();
 
   /**
    * @fn uint8_t getZOR();
-   *  @brief Z axis data overun
-   *  @return ZOR
-   *  1 -> A new data for the Z axis has overwritten the previous set
+   *  @brief Z axis data overun.
+   *  @return ZOR.
+   *  1 -> A new data for the Z axis has overwritten the previous set.
    */
   uint8_t getZOR();
 
   /**
    * @fn uint8_t getYOR();
-   *  @brief Y axis data overun
-   *  @return YOR
-   *  1 -> A new data for the Y axis has overwritten the previous set
+   *  @brief Y axis data overun.
+   *  @return YOR.
+   *  1 -> A new data for the Y axis has overwritten the previous set.
    */
   uint8_t getYOR();
 
   /**
    * @fn uint8_t getXOR();
-   *  @brief X axis data overun
-   *  @return XOR
-   *  1 -> A new data for the X axis has overwritten the previous set
+   *  @brief X axis data overun.
+   *  @return XOR.
+   *  1 -> A new data for the X axis has overwritten the previous set.
    */
   uint8_t getXOR();
 
   /**
    * @fn uint8_t getZYXDA();
-   *  @brief X, Y, Z axis new data available
-   *  @return ZYXDA
-   *  1 -> A new set of data is available
+   *  @brief X, Y, Z axis new data available.
+   *  @return ZYXDA.
+   *  1 -> A new set of data is available.
    */
   uint8_t getZYXDA();
 
   /**
    * @fn uint8_t getZDA();
-   *  @brief Z axis new data available
-   *  @return ZDA
-   *  1 -> A new data for the Z axis is available
+   *  @brief Z axis new data available.
+   *  @return ZDA.
+   *  1 -> A new data for the Z axis is available.
    */
   uint8_t getZDA();
 
   /**
    * @fn uint8_t getYDA();
-   *  @brief Y axis new data available
-   *  @return YDA
-   *  1 -> A new data for the Y axis is available
+   *  @brief Y axis new data available.
+   *  @return YDA.
+   *  1 -> A new data for the Y axis is available.
    */
   uint8_t getYDA();
 
   /**
    * @fn uint8_t getXDA();
-   *  @brief X axis new data available
-   *  @return XDA
-   *  1 -> A new data for the X axis is available
+   *  @brief X axis new data available.
+   *  @return XDA.
+   *  1 -> A new data for the X axis is available.
    */
   uint8_t getXDA();
 
@@ -1041,8 +1039,8 @@ class LIS2HH12 {
 
   /**
    * @fn float getTemp();
-   *  @brief Temperature data
-   *  @return temperature
+   *  @brief Temperature data.
+   *  @return temperature.
    */
   float getTemp();
 
