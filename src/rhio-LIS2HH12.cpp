@@ -2,7 +2,7 @@
  * Rhomb.io LIS2HH12 library
  *
  * @author Jose Francisco Martí Martín
- * @version 0.1.0
+ * @version 2.1.0
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@ void LIS2HH12::setI2C(uint8_t Address) { I2CAddress = Address; }
 //******Basic function******
 
 void LIS2HH12::setBasicConfig() {
-  writeRegister(23, LIS2HH12_CTRL1, 232);
-  writeRegister(0, LIS2HH12_CTRL2, 255);
+  writeRegister(23, LIS2HH12_CTRL1, 0);
+  writeRegister(0, LIS2HH12_CTRL2, 0);
   writeRegister(0, LIS2HH12_CTRL3, 0);
   writeRegister(0, LIS2HH12_ACT_THS, 0);
   writeRegister(0, LIS2HH12_ACT_DUR, 0);
